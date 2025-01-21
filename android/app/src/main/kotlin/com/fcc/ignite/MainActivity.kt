@@ -1,4 +1,4 @@
-package com.example.ignite
+package com.fcc.ignite
 
 import io.flutter.embedding.android.FlutterActivity
 
