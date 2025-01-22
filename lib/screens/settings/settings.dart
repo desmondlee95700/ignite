@@ -45,12 +45,24 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft02,
-              size: 30), // Your custom icon here
-          onPressed: () {
-            Navigator.pop(context); // Pop the current screen
-          },
+        // leading: IconButton(
+        //   icon: const Icon(HugeIcons.strokeRoundedArrowLeft02,
+        //       size: 30), // Your custom icon here
+        //   onPressed: () {
+        //     Navigator.pop(context); // Pop the current screen
+        //   },
+        // ),
+        title: const Row(
+          children: [
+            Text(
+              " | Settings",
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontFamily: 'Manrope',
+                fontSize: 18,
+              ),
+            ),
+          ],
         ),
       ),
       body: Column(
@@ -122,7 +134,8 @@ class _SettingsPageState extends State<SettingsPage> {
               );
             },
           ),
-          const Spacer(),
+          //const Spacer(),
+          const SizedBox(height: 250),
           Container(
             margin: EdgeInsets.symmetric(
               vertical: getProportionateScreenHeight(15),

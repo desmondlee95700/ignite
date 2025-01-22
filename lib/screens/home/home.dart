@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
-import 'package:ignite/screens/settings/settings.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:ignite/functions/size_config.dart';
+import 'package:ignite/screens/annoucement/annoucement_bloc/announcement_bloc.dart';
+import 'package:ignite/screens/annoucement/home_annoucement.dart';
+import 'package:ignite/screens/home/home_utils/home_appbar.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   final ScrollController controller;
@@ -14,57 +19,94 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AnnouncementBloc announcementBloc =
+      AnnouncementBloc(httpClient: http.Client());
+
+  @override
+  void initState() {
+    announcementBloc.add(FetchAnnouncement());
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      controller: widget.controller,
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            floating: true,
-            snap: true,
-            surfaceTintColor: Colors.transparent,
-            title: const Row(
-              children: [
-                const Text(
-                  " | Home",
-                  style: TextStyle(
-                    color: kPrimaryColor,
-                    fontFamily: 'Manrope',
-                    fontSize: 18,
-                  ),
-                ),
-              ],
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      //remove safe area for extend image behind appbar
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverPersistentHeader(
+              delegate: SilverAppHomeBar(),
+              pinned: true,
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      duration: const Duration(milliseconds: 300),
-                      reverseDuration: const Duration(milliseconds: 300),
-                      isIos: true,
-                      child: const SettingsPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  HugeIcons.strokeRoundedSettings03,
-                ),
-              ),
+          ];
+        },
+        body: RefreshIndicator.adaptive(
+          color: kPrimaryColor,
+          onRefresh: () async {
+            announcementBloc.add(FetchAnnouncement(
+              retrying: true,
+            ));
+          },
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => announcementBloc),
             ],
-          ),
-        ];
-      },
-      body: Container(
-        alignment: Alignment.center, // Center the text
-        child: const Text(
-          'Home', // Display the title 'name'
-          style: TextStyle(
-            fontSize: 24, // Customize the text size
-            fontWeight: FontWeight.bold, // Optional: make the text bold
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).viewPadding.top,
+                left: 10,
+                right: 10,
+              ),
+              child: CustomScrollView(
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      child: BlocBuilder<AnnouncementBloc, AnnouncementState>(
+                        builder: (context, state) {
+                          String? title = state.title;
+                          return Row(
+                            children: [
+                              Text(
+                                title ?? "Hot Stuff",
+                                style: const TextStyle(
+                                  fontFamily: 'Manrope',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: getProportionateScreenWidth(10)),
+                              const Icon(
+                                HugeIcons
+                                    .strokeRoundedMegaphone02, // Replace with your desired icon
+                                size: 18, // Adjust size as needed
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: HomeAnnoucementSection(
+                      announcementBloc: announcementBloc,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

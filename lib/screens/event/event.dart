@@ -5,7 +5,6 @@ import 'package:ignite/screens/settings/settings.dart';
 import 'package:page_transition/page_transition.dart';
 
 class DiscoverPage extends StatefulWidget {
-
   final ScrollController controller;
 
   const DiscoverPage({Key? key, required this.controller}) : super(key: key);
@@ -21,13 +20,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
       controller: widget.controller,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
-          SliverAppBar(
+          const SliverAppBar(
             floating: true,
             snap: true,
             surfaceTintColor: Colors.transparent,
-            title: const Row(
+            title:  Row(
               children: [
-                const Text(
+                 Text(
                   " | Event",
                   style: TextStyle(
                     color: kPrimaryColor,
@@ -37,25 +36,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 ),
               ],
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.rightToLeft,
-                      duration: const Duration(milliseconds: 300),
-                      reverseDuration: const Duration(milliseconds: 300),
-                      isIos: true,
-                      child: const SettingsPage(),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  HugeIcons.strokeRoundedSettings03,
-                ),
-              ),
-            ],
           ),
         ];
       },

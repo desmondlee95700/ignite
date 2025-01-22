@@ -5,6 +5,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/screens/annoucement/annoucement.dart';
 import 'package:ignite/screens/event/event.dart';
 import 'package:ignite/screens/home/home.dart';
+import 'package:ignite/screens/settings/settings.dart';
 import 'package:ignite/screens/video/video.dart';
 
 class AppBody extends StatefulWidget {
@@ -45,6 +46,7 @@ class _AppBodyState extends State<AppBody> {
         AnnoucementPage(controller: _scrollControllers[1]!),
         DiscoverPage(controller: _scrollControllers[2]!),
         VideoPage(controller: _scrollControllers[3]!),
+        const SettingsPage(),
       ];
 
   @override
@@ -138,6 +140,15 @@ class _AppBodyState extends State<AppBody> {
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedPlayList,
               unselectedIcon: HugeIcons.strokeRoundedPlayList,
+              selectedColor: Colors.red,
+              unselectedColor: AdaptiveTheme.of(context).theme ==
+                      AdaptiveTheme.of(context).darkTheme
+                  ? Colors.black
+                  : Colors.white,
+            ),
+            CrystalNavigationBarItem(
+              icon: HugeIcons.strokeRoundedSettings03,
+              unselectedIcon: HugeIcons.strokeRoundedSettings03,
               selectedColor: Colors.red,
               unselectedColor: AdaptiveTheme.of(context).theme ==
                       AdaptiveTheme.of(context).darkTheme
