@@ -95,14 +95,20 @@ class _SettingsPageState extends State<SettingsPage> {
               padding:
                   EdgeInsets.only(left: 16), // Optional padding for spacing
               child: Text("Info",
-                  style: TextStyle(fontSize: 18, fontFamily: 'Manrope')),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Manrope',
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
             ),
           ),
           ListTile(
             leading: const Icon(
               HugeIcons.strokeRoundedMessage01,
+              color: Colors.white,
             ),
-            title: const Text("Inquiries", style: TextStyle(fontSize: 16)),
+            title: const Text("Inquiries",
+                style: TextStyle(fontSize: 16, color: Colors.white)),
             onTap: () async {
               // await launchUrl(
               //     Uri.parse(
@@ -117,14 +123,20 @@ class _SettingsPageState extends State<SettingsPage> {
               padding:
                   EdgeInsets.only(left: 16), // Optional padding for spacing
               child: Text("App",
-                  style: TextStyle(fontSize: 18, fontFamily: 'Manrope')),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Manrope',
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
             ),
           ),
           ListTile(
             leading: const Icon(
               HugeIcons.strokeRoundedStar,
+              color: Colors.white,
             ),
-            title: const Text("Rate App", style: TextStyle(fontSize: 16)),
+            title: const Text("Rate App",
+                style: TextStyle(fontSize: 16, color: Colors.white)),
             onTap: () async {
               showDialog(
                 context: context,
@@ -244,12 +256,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           // Handle this as you prefer
                         }
                       },
-                      child: Icon(HugeIcons.strokeRoundedNewTwitterRectangle,
-                          color: AdaptiveTheme.of(context).theme ==
-                                  AdaptiveTheme.of(context).darkTheme
-                              ? Colors.white
-                              : Colors.black,
-                          size: 30),
+                      child: const Icon(HugeIcons.strokeRoundedTiktok,
+                          color: Colors.white, size: 30),
                     ),
                     SizedBox(width: getProportionateScreenWidth(20)),
                     InkWell(

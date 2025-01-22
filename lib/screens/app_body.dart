@@ -101,59 +101,38 @@ class _AppBodyState extends State<AppBody> {
               _pageController.jumpToPage(index);
             }
           },
-          indicatorColor: AdaptiveTheme.of(context).theme ==
-                  AdaptiveTheme.of(context).darkTheme
-              ? Colors.black
-              : Colors.white,
-          backgroundColor: AdaptiveTheme.of(context).theme ==
-                  AdaptiveTheme.of(context).darkTheme
-              ? Colors.white
-              : Colors.black,
+          indicatorColor: Colors.white,
+          backgroundColor: Colors.black,
           items: [
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedHome01,
               unselectedIcon: HugeIcons.strokeRoundedHome01,
               selectedColor: Colors.red,
-              unselectedColor: AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? Colors.black
-                  : Colors.white,
+              unselectedColor: Colors.white,
             ),
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedMegaphone02,
               unselectedIcon: HugeIcons.strokeRoundedMegaphone02,
               selectedColor: Colors.red,
-              unselectedColor: AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? Colors.black
-                  : Colors.white,
+              unselectedColor: Colors.white,
             ),
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedCalendar03,
               unselectedIcon: HugeIcons.strokeRoundedCalendar03,
               selectedColor: Colors.red,
-              unselectedColor: AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? Colors.black
-                  : Colors.white,
+              unselectedColor: Colors.white,
             ),
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedPlayList,
               unselectedIcon: HugeIcons.strokeRoundedPlayList,
               selectedColor: Colors.red,
-              unselectedColor: AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? Colors.black
-                  : Colors.white,
+              unselectedColor: Colors.white,
             ),
             CrystalNavigationBarItem(
               icon: HugeIcons.strokeRoundedSettings03,
               unselectedIcon: HugeIcons.strokeRoundedSettings03,
               selectedColor: Colors.red,
-              unselectedColor: AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? Colors.black
-                  : Colors.white,
+              unselectedColor: Colors.white,
             ),
           ],
         ),

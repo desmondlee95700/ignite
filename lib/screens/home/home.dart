@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,13 +86,14 @@ class _HomePageState extends State<HomePage> {
                                   fontFamily: 'Manrope',
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                               SizedBox(width: getProportionateScreenWidth(10)),
                               const Icon(
-                                HugeIcons
-                                    .strokeRoundedMegaphone02, // Replace with your desired icon
-                                size: 18, // Adjust size as needed
+                                HugeIcons.strokeRoundedMegaphone02,
+                                size: 18,
+                                color: Colors.white,
                               ),
                             ],
                           );

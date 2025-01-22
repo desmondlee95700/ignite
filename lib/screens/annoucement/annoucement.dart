@@ -150,9 +150,10 @@ class _AnnoucementPageState extends State<AnnoucementPage> {
                                 child: Text(
                                   errorMsg ?? "You have reached the bottom",
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
+                                  style:  TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
+                                    color: Colors.grey.shade500,
                                   ),
                                 ))
                             : VisibilityDetector(
