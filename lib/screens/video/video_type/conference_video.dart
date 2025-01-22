@@ -47,13 +47,8 @@ class _ConferenceVideoPageState extends State<ConferenceVideoPage>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            HugeIcons.strokeRoundedArrowLeft02,
-            color: AdaptiveTheme.of(context).theme ==
-                    AdaptiveTheme.of(context).darkTheme
-                ? Colors.white
-                : Colors.black,
-          ),
+          icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
+              size: 25, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },

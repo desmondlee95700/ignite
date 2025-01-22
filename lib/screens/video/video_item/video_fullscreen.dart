@@ -123,7 +123,8 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft02, color: Colors.white),
+          icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
+              size: 25, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -147,7 +148,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
           progressIndicatorColor: kPrimaryColor,
           progressColors: const ProgressBarColors(
               playedColor: kPrimaryColor,
-              backgroundColor: darkThemeColor,
+              backgroundColor: Colors.black,
               bufferedColor: darkThemeColor),
           bottomActions: const [
             SizedBox(width: 2.0),
@@ -162,7 +163,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
             ),
             RemainingDuration(),
             PlaybackSpeedButton(),
-            FullScreenButton(),
+            //FullScreenButton(),
           ],
           thumbnail: widget.videos.thumbnail != null
               ? CachedNetworkImage(
@@ -222,7 +223,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
                                 convertDateFormat(widget.videos.post_date),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
-                                style:  TextStyle(
+                                style: TextStyle(
                                   fontFamily: 'Manrope',
                                   fontSize: 12,
                                   color: Colors.grey.shade500,

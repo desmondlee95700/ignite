@@ -11,16 +11,17 @@ import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 import 'package:visibility_detector/visibility_detector.dart';
 
-class MusicVideoPage extends StatefulWidget {
+class LyricsVideoPage extends StatefulWidget {
   final ScrollController controller;
 
-  const MusicVideoPage({Key? key, required this.controller}) : super(key: key);
+  const LyricsVideoPage({Key? key, required this.controller})
+      : super(key: key);
 
   @override
-  _MusicVideoPageState createState() => _MusicVideoPageState();
+  _LyricsVideoPageState createState() => _LyricsVideoPageState();
 }
 
-class _MusicVideoPageState extends State<MusicVideoPage>
+class _LyricsVideoPageState extends State<LyricsVideoPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -31,7 +32,7 @@ class _MusicVideoPageState extends State<MusicVideoPage>
   @override
   void initState() {
     super.initState();
-    videoBloc.add(FetchVideo(type: "musicvideo"));
+    videoBloc.add(FetchVideo(type: "lyrics"));
   }
 
   @override
@@ -55,7 +56,7 @@ class _MusicVideoPageState extends State<MusicVideoPage>
         title: const Row(
           children: [
             const Text(
-              " | Music Videos",
+              " | Lyrics Video",
               style: TextStyle(
                 color: kPrimaryColor,
                 fontFamily: 'Manrope',
@@ -109,7 +110,7 @@ class _MusicVideoPageState extends State<MusicVideoPage>
               return RefreshIndicator.adaptive(
                 color: kPrimaryColor,
                 onRefresh: () async {
-                  videoBloc.add(FetchVideo(retrying: true, type: "musicvideo"));
+                  videoBloc.add(FetchVideo(retrying: true, type: "lyrics"));
                 },
                 child: Padding(
                   padding: EdgeInsets.only(
@@ -158,7 +159,7 @@ class _MusicVideoPageState extends State<MusicVideoPage>
                                     videoBloc.add(FetchVideo(
                                       //nextKey: nextKey,
                                       nextKey: null,
-                                      type: "musicvideo",
+                                      type: "lyrics",
                                       retrying: false,
                                     ));
                                   }

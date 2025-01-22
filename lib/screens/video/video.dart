@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Album.dart';
 import 'package:ignite/screens/video/video_type/conference_video.dart';
+import 'package:ignite/screens/video/video_type/lyrics_video.dart';
 import 'package:ignite/screens/video/video_type/music_video.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -24,6 +24,9 @@ class _VideoPageState extends State<VideoPage> {
     Album(
         post_title: 'Conference Highlight',
         thumbnail: 'https://i.ytimg.com/vi/h1obdF56-1k/hqdefault.jpg'),
+    Album(
+        post_title: 'Lyrics Video',
+        thumbnail: 'https://i.ytimg.com/vi/uhsda41UnJI/hqdefault.jpg'),
   ];
 
   @override
@@ -90,6 +93,19 @@ class _VideoPageState extends State<VideoPage> {
                     reverseDuration: const Duration(milliseconds: 300),
                     isIos: true,
                     child: ConferenceVideoPage(
+                      controller: widget.controller,
+                    ),
+                  ),
+                );
+              } else if (album.post_title == 'Lyrics Video') {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    duration: const Duration(milliseconds: 300),
+                    reverseDuration: const Duration(milliseconds: 300),
+                    isIos: true,
+                    child: LyricsVideoPage(
                       controller: widget.controller,
                     ),
                   ),
