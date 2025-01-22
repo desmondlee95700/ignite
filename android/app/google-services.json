@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "974667675947",
+    "project_id": "fcc-ignite",
+    "storage_bucket": "fcc-ignite.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974667675947:android:a7609febfd1da29d172d6e",
+        "android_client_info": {
+          "package_name": "com.fcc.ignite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCUSIFnCSYegPrf7Ay7Eiyy1UqIH6q-hI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
