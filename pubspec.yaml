@@ -107,9 +107,11 @@ dependencies:
   bloc_concurrency: ^0.2.2
   equatable: ^2.0.5
   stream_transform: ^2.1.0
-
+  
   #native share
   share_plus: ^10.1.1
+
+  flutter_in_app_pip: ^1.7.4
 
 dev_dependencies:
   flutter_test:

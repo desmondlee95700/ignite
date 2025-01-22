@@ -1,16 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_in_app_pip/picture_in_picture.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Video.dart';
+import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/screens/video/video_item/video_fullscreen.dart';
 import 'package:page_transition/page_transition.dart';
 
 class VideoItem extends StatelessWidget {
   final Video videoData;
 
-  const VideoItem(
-      {super.key, required this.videoData});
+  const VideoItem({super.key, required this.videoData});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +20,10 @@ class VideoItem extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
+        if (context.read<PipBloc>().state.isPipActive) {
+          context.read<PipBloc>().add(ClosePip());
+          PictureInPicture.stopPiP();
+        }
         Navigator.push(
           context,
           PageTransition(
@@ -67,8 +73,7 @@ class VideoItem extends StatelessWidget {
                         color: Colors.black,
                         borderRadius: BorderRadius.circular(12),
                         image: const DecorationImage(
-                          image: AssetImage(
-                              "assets/images/ignite_icon.jpg"),
+                          image: AssetImage("assets/images/ignite_icon.jpg"),
                         ),
                       ),
                     );
@@ -81,8 +86,7 @@ class VideoItem extends StatelessWidget {
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(12),
                     image: const DecorationImage(
-                      image: AssetImage(
-                          "assets/images/ignite_icon.jpg"),
+                      image: AssetImage("assets/images/ignite_icon.jpg"),
                     ),
                   ),
                 ),

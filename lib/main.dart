@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/functions/constant.dart';
+import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/splash_screen.dart';
 
 Future<void> main() async {
@@ -15,7 +17,13 @@ Future<void> main() async {
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (_) => PipBloc()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -32,7 +40,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       //dark: ThemeData.dark(useMaterial3: true),
-      dark :  ThemeData.dark().copyWith(
+      dark: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: darkThemeColor,
         appBarTheme: const AppBarTheme(
           surfaceTintColor: darkThemeColor,
