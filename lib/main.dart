@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
+import 'package:ignite/functions/constant.dart';
 import 'package:ignite/splash_screen.dart';
 
 Future<void> main() async {
@@ -24,13 +25,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
       light: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: darkThemeColor,
         appBarTheme: const AppBarTheme(
-          surfaceTintColor: Colors.white,
-          backgroundColor: Colors.white,
+          surfaceTintColor: darkThemeColor,
+          backgroundColor: darkThemeColor,
         ),
       ),
-      dark: ThemeData.dark(useMaterial3: true),
+      //dark: ThemeData.dark(useMaterial3: true),
+      dark :  ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: darkThemeColor,
+        appBarTheme: const AppBarTheme(
+          surfaceTintColor: darkThemeColor,
+          backgroundColor: darkThemeColor,
+        ),
+      ),
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -14,7 +14,8 @@ import 'package:visibility_detector/visibility_detector.dart';
 class ConferenceVideoPage extends StatefulWidget {
   final ScrollController controller;
 
-  const ConferenceVideoPage({Key? key, required this.controller}) : super(key: key);
+  const ConferenceVideoPage({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   _ConferenceVideoPageState createState() => _ConferenceVideoPageState();
@@ -43,11 +44,16 @@ class _ConferenceVideoPageState extends State<ConferenceVideoPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft02,
-              color: Colors.black),
+          icon: Icon(
+            HugeIcons.strokeRoundedArrowLeft02,
+            color: AdaptiveTheme.of(context).theme ==
+                    AdaptiveTheme.of(context).darkTheme
+                ? Colors.white
+                : Colors.black,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -109,10 +115,7 @@ class _ConferenceVideoPageState extends State<ConferenceVideoPage>
               return RefreshIndicator.adaptive(
                 color: kPrimaryColor,
                 onRefresh: () async {
-                  videoBloc.add(FetchVideo(
-                    retrying: true,
-                    type: "conference"
-                  ));
+                  videoBloc.add(FetchVideo(retrying: true, type: "conference"));
                 },
                 child: Padding(
                   padding: EdgeInsets.only(

@@ -43,11 +43,16 @@ class _MusicVideoPageState extends State<MusicVideoPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft02,
-              color: Colors.black),
+          icon: Icon(
+            HugeIcons.strokeRoundedArrowLeft02,
+            color: AdaptiveTheme.of(context).theme ==
+                    AdaptiveTheme.of(context).darkTheme
+                ? Colors.white
+                : Colors.black,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },

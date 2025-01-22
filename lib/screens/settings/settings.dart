@@ -55,28 +55,28 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Column(
         children: [
-          ListTile(
-            leading: Icon(
-              AdaptiveTheme.of(context).theme ==
-                      AdaptiveTheme.of(context).darkTheme
-                  ? HugeIcons.strokeRoundedMoon02
-                  : HugeIcons.strokeRoundedSun03,
-            ),
-            title: const Text("Theme", style: TextStyle(fontSize: 16)),
-            trailing: Switch.adaptive(
-              activeColor: kPrimaryColor,
-              value: AdaptiveTheme.of(context).theme ==
-                  AdaptiveTheme.of(context).darkTheme,
-              onChanged: (value) {
-                if (value) {
-                  AdaptiveTheme.of(context).setDark();
-                } else {
-                  AdaptiveTheme.of(context).setLight();
-                }
-              },
-            ),
-          ),
-          const SizedBox(height: 30),
+          // ListTile(
+          //   leading: Icon(
+          //     AdaptiveTheme.of(context).theme ==
+          //             AdaptiveTheme.of(context).darkTheme
+          //         ? HugeIcons.strokeRoundedMoon02
+          //         : HugeIcons.strokeRoundedSun03,
+          //   ),
+          //   title: const Text("Theme", style: TextStyle(fontSize: 16)),
+          //   trailing: Switch.adaptive(
+          //     activeColor: kPrimaryColor,
+          //     value: AdaptiveTheme.of(context).theme ==
+          //         AdaptiveTheme.of(context).darkTheme,
+          //     onChanged: (value) {
+          //       if (value) {
+          //         AdaptiveTheme.of(context).setDark();
+          //       } else {
+          //         AdaptiveTheme.of(context).setLight();
+          //       }
+          //     },
+          //   ),
+          // ),
+          // const SizedBox(height: 30),
           const Align(
             alignment: Alignment.centerLeft, // Align to the left
             child: const Padding(
