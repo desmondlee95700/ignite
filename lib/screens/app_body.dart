@@ -1,9 +1,9 @@
-
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:ignite/screens/discover/discover.dart';
+import 'package:ignite/screens/annoucement/annoucement.dart';
+import 'package:ignite/screens/event/event.dart';
 import 'package:ignite/screens/home/home.dart';
 import 'package:ignite/screens/video/video.dart';
 
@@ -42,11 +42,10 @@ class _AppBodyState extends State<AppBody> {
 
   List<Widget> tabPages(BuildContext context) => [
         HomePage(controller: _scrollControllers[0]!),
-        DiscoverPage(controller: _scrollControllers[1]!),
+        AnnoucementPage(controller: _scrollControllers[1]!),
+        DiscoverPage(controller: _scrollControllers[2]!),
         VideoPage(controller: _scrollControllers[3]!),
       ];
-
-
 
   @override
   void initState() {
@@ -61,8 +60,6 @@ class _AppBodyState extends State<AppBody> {
     _pageController.dispose();
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,8 +118,17 @@ class _AppBodyState extends State<AppBody> {
                   : Colors.white,
             ),
             CrystalNavigationBarItem(
-              icon: HugeIcons.strokeRoundedDiscoverCircle,
-              unselectedIcon: HugeIcons.strokeRoundedDiscoverCircle,
+              icon: HugeIcons.strokeRoundedMegaphone02,
+              unselectedIcon: HugeIcons.strokeRoundedMegaphone02,
+              selectedColor: Colors.red,
+              unselectedColor: AdaptiveTheme.of(context).theme ==
+                      AdaptiveTheme.of(context).darkTheme
+                  ? Colors.black
+                  : Colors.white,
+            ),
+            CrystalNavigationBarItem(
+              icon: HugeIcons.strokeRoundedCalendar03,
+              unselectedIcon: HugeIcons.strokeRoundedCalendar03,
               selectedColor: Colors.red,
               unselectedColor: AdaptiveTheme.of(context).theme ==
                       AdaptiveTheme.of(context).darkTheme
