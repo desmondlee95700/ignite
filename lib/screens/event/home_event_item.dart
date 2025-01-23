@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:ignite/functions/datetime_helper.dart';
 import 'package:ignite/model/Event.dart';
+import 'package:ignite/screens/event/event_details.dart';
+import 'package:page_transition/page_transition.dart';
 
 class HomeEventItem extends StatelessWidget {
   const HomeEventItem({
@@ -16,7 +18,18 @@ class HomeEventItem extends StatelessWidget {
   Widget build(BuildContext context) {
     var unescape = HtmlUnescape();
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            duration: const Duration(milliseconds: 600),
+            reverseDuration: const Duration(milliseconds: 600),
+            isIos: true,
+            child: EventDetailsPage(events: events),
+          ),
+        );
+      },
       child: Container(
         width: 150,
         margin: const EdgeInsets.only(right: 10),
@@ -167,7 +180,7 @@ class HomeEventItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                 "${events.time}" ,
+                "${events.time}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

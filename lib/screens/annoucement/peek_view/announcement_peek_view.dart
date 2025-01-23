@@ -46,7 +46,7 @@ class AnnouncementPeekView extends StatelessWidget {
                           announcement.title!,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontFamily: 'Manrope',
                             fontWeight: FontWeight.bold,
                           ),
