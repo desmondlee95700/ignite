@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Announcement.dart';
+import 'package:ignite/screens/annoucement/peek_view/peekview_manager.dart';
 
 class ExploreGridItem extends StatelessWidget {
   final Announcement announcement;
@@ -13,8 +15,18 @@ class ExploreGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {},
+      onLongPress: () {
+        HapticFeedback.vibrate();
+        final peekViewManager = PeekViewManager(announcement: announcement);
+        peekViewManager.showAnnouncementPeekView(context,
+            announcement: announcement);
+      },
+      onLongPressUp: () {
+        final peekViewManager = PeekViewManager(announcement: announcement);
+        peekViewManager.showFullView(context);
+      },
       child: Stack(
         children: [
           announcement.image != null
@@ -102,19 +114,17 @@ class ExploreGridItem extends StatelessWidget {
                     color: Colors.white,
                     size: 20,
                   ),
-                  const SizedBox(
-                      width: 8), 
+                  const SizedBox(width: 8),
                   Flexible(
                     child: Text(
                       announcement.title!,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
-                        overflow:
-                            TextOverflow.ellipsis, 
+                        overflow: TextOverflow.ellipsis,
                         fontFamily: "Manrope",
                       ),
-                      maxLines: 1, 
+                      maxLines: 1,
                     ),
                   ),
                 ],

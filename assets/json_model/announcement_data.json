@@ -4,21 +4,25 @@
         {
             "id": 1,
             "title": "Sign Up For Ignite 2024",
+            "description": "Quickly SignUp for Ignite 2024",
             "image": "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/464217979_867298045547122_1446318876061095220_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_ohc=qtUVieFfDuoQ7kNvgH9k_Pb&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=AW1yDEePjRrpW4YggINaIHU&oh=00_AYDsPIO6bEw7RBf0FXnGCbR2zfUu4eewao2U-JLc2Du_JQ&oe=6796A6AB"
         },
         {
             "id": 2,
-            "title": "Ignite Schedulue",
+            "title": "Ignite Schedule",
+            "description": "Schedule for Ignite 2024, Have a look ! ",
             "image": "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/464103070_867298042213789_1213122505456474544_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=EPLA-q3-q1kQ7kNvgEE-ZcY&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=A51KRxcERckjwqyLoAkW-aU&oh=00_AYBA1zXN6gBbgke9902ybviMRUAO2deNZIltKhb59i6soQ&oe=6796A2AB"
         },
         {
             "id": 3,
             "title": "About Ignite",
+            "description": "About Ignite this year 2024",
             "image": "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/462362906_857729573170636_3974359653757608620_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_ohc=05kH6Y9V2nYQ7kNvgE_3iOy&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=Aou84Z5bw1seQp3Zjdpwtg9&oh=00_AYCiNXu0wZjygO_hpV2tEzea5sMLaA7qMyQIvuUY_IuwbQ&oe=6796D162"
         },
         {
             "id": 4,
             "title": "New Song is Coming!",
+            "description": "Stay tune for our NEW SONG FEATURES ON YOUTUBE & SPOTIFY",
             "image": "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/438224287_757951899815071_7325491803939766829_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=127cfc&_nc_ohc=XmCNKVgl0CcQ7kNvgHXsijQ&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=Al2HAhFTU5DtBE0SDfu4LVd&oh=00_AYB4fMaRNtxjvoWch2_YCMI5EPyfIDEIzsyAYuE_3P0nHQ&oe=6796B389"
         }
     ]
