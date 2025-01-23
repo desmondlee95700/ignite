@@ -164,11 +164,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
+import 'package:ignite/functions/datetime_helper.dart';
+import 'package:ignite/functions/size_config.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_utils/event_details_appbar.dart';
-import 'package:ignite/screens/home/home_utils/background_wave.dart';
-import 'package:page_transition/page_transition.dart';
 
 class EventDetailsPage extends StatefulWidget {
   const EventDetailsPage({
@@ -200,7 +201,6 @@ class _EventDetailsPage extends State<EventDetailsPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      //remove safe area for extend image behind appbar
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return <Widget>[
@@ -213,23 +213,153 @@ class _EventDetailsPage extends State<EventDetailsPage> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.only(top: 0),
-                  child: const Padding(
-                    padding: EdgeInsets.all(23),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 0),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
                           child: Text(
-                            "MyTrust ID",
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            widget.events.title!,
+                            style: const TextStyle(
+                                fontSize: 24,
+                                fontFamily: 'Manrope',
+                                color: Colors.red,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(30)),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.1),
+                              spreadRadius: 0,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 15, bottom: 15, right: 8, left: 8),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    const Icon(HugeIcons.strokeRoundedTag01,
+                                        color: Colors.grey, size: 20),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(10)),
+                                    const Text("RM 25.00",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(20)),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                        HugeIcons.strokeRoundedLocation08,
+                                        color: Colors.grey,
+                                        size: 20),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(10)),
+                                    const Text("Faith Chrisitan Centre",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                  height: getProportionateScreenHeight(20)),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                        HugeIcons.strokeRoundedCalendar03,
+                                        color: Colors.grey,
+                                        size: 20),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(10)),
+                                    Text(
+                                        getDay(
+                                            widget.events.post_date.toString()),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(3)),
+                                    Text(
+                                        getMonthShort(
+                                            widget.events.post_date.toString()),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(5)),
+                                    const Text("-",
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                    SizedBox(
+                                        width: getProportionateScreenWidth(5)),
+                                    Text(widget.events.time!,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: "Manrope",
+                                            fontSize: 14)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: getProportionateScreenHeight(30)),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "About",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Manrope',
+                                    color: Colors.grey.shade600,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
