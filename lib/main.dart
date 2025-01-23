@@ -5,6 +5,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_in_app_pip/pip_material_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/functions/constant.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => MaterialApp(
+      builder: (theme, darkTheme) => PiPMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme,
         darkTheme: darkTheme,

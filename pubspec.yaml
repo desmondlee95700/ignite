@@ -44,7 +44,7 @@ dependencies:
   adaptive_theme: ^3.6.0
 
   #bottom navigation bar
-  crystal_navigation_bar: ^1.0.2
+  flashy_tab_bar2: ^0.0.10
 
   #icons
   hugeicons: ^0.0.7
@@ -147,6 +147,7 @@ flutter:
     - assets/json_model/conference_video.json
     - assets/json_model/lyrics_video.json
     - assets/json_model/announcement_data.json
+    - assets/json_model/event_data.json
   fonts:
     - family: Manrope
       fonts:

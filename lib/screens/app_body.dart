@@ -1,6 +1,4 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_in_app_pip/picture_in_picture.dart';
@@ -83,7 +81,7 @@ class _AppBodyState extends State<AppBody> {
             mute: false,
             autoPlay: true,
             disableDragSeek: true,
-            hideThumbnail: true,
+            hideThumbnail: false,
             loop: false,
             isLive: false,
             forceHD: false,
@@ -95,12 +93,12 @@ class _AppBodyState extends State<AppBody> {
     }
 
     PictureInPicture.updatePiPParams(
-      pipParams: const PiPParams(
+      pipParams: PiPParams(
         pipWindowHeight: 144,
         pipWindowWidth: 256,
         bottomSpace: 64,
-        leftSpace: 12,
-        rightSpace: 12,
+        leftSpace: 64,
+        rightSpace: 64,
         topSpace: 64,
         maxSize: Size(256, 144),
         minSize: Size(144, 108),
@@ -114,66 +112,42 @@ class _AppBodyState extends State<AppBody> {
       pipWidget: PiPWidget(
         onPiPClose: () {
           context.read<PipBloc>().add(ClosePip());
+          print("Logged pip closed");
         },
-        elevation: 0, //Optional
+        elevation: 0,
         pipBorderRadius: 10,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(12),
-          ),
+              color: Colors.black, borderRadius: BorderRadius.circular(12)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: YoutubePlayerBuilder(
-              player: YoutubePlayer(
-                width: MediaQuery.of(context).size.width,
-                aspectRatio: 1 / 3,
-                controller: _youtubePlayerController,
-                showVideoProgressIndicator: true,
-                actionsPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                progressIndicatorColor: kPrimaryColor,
-                progressColors: const ProgressBarColors(
-                    playedColor: kPrimaryColor,
-                    backgroundColor: Colors.black,
-                    bufferedColor: darkThemeColor),
-                bottomActions: const [
-                  SizedBox(width: 2.0),
-                  CurrentPosition(),
-                  SizedBox(width: 5.0),
-                  ProgressBar(
-                    isExpanded: true,
-                    colors: ProgressBarColors(
-                      playedColor: kPrimaryColor,
-                      handleColor: Colors.white,
+            child: Stack(
+              children: [
+                Container(
+                  color: Colors.black,
+                  child: YoutubePlayer(
+                    controller: _youtubePlayerController,
+                    showVideoProgressIndicator: true,
+                  ),
+                ),
+                Positioned(
+                  top: 8.0,
+                  right: 8.0,
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<PipBloc>().add(ClosePip());
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade500,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.close, color: Colors.black),
                     ),
                   ),
-                  RemainingDuration(),
-                  PlaybackSpeedButton(),
-                  //FullScreenButton(),
-                ],
-                thumbnail: video.thumbnail != null
-                    ? CachedNetworkImage(
-                        imageUrl: video.thumbnail!,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) {
-                          return Image.asset(
-                            "assets/images/ignite_icon.jpg",
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : Image.asset("assets/images/ignite_icon.jpg",
-                        fit: BoxFit.cover),
-                onReady: () {},
-              ),
-              builder: (context, player) => Container(
-                color: Colors.black,
-                height: MediaQuery.of(context).size.height,
-                child: Center(
-                  child: player,
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -191,75 +165,67 @@ class _AppBodyState extends State<AppBody> {
       child: BlocListener<PipBloc, PipState>(
         listener: (context, state) {
           if (state.video != null) {
+            print("Logged is here not null");
             pipPlayer(state.video!);
+          } else {
+            print("Logged is here");
           }
         },
         child: Scaffold(
           extendBody: true,
-          bottomNavigationBar: CrystalNavigationBar(
-            currentIndex: _currentPage,
-            onTap: (index) {
-              // setState(() => _currentPage = index);
-              // _pageController.jumpToPage(index);
+          bottomNavigationBar: FlashyTabBar(
+            animationCurve: Curves.linear,
+            selectedIndex: _currentPage,
+            showElevation: false,
+            backgroundColor: darkThemeColor,
+            onItemSelected: (index) {
               final now = DateTime.now();
-
               if (_currentPage == index) {
-                // Check if this is a double-tap
                 if (_lastTapTime == null ||
                     now.difference(_lastTapTime!) >
                         const Duration(milliseconds: 300)) {
-                  // Record the tap time
                   _lastTapTime = now;
                 } else {
-                  // Perform the scroll-to-top action on double-tap
                   _scrollControllers[index]?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeOut,
                   );
-                  _lastTapTime = null; // Reset the last tap time
+                  _lastTapTime = null;
                 }
               } else {
-                // Navigate to a different page
                 setState(() => _currentPage = index);
                 _pageController.jumpToPage(index);
               }
             },
-            indicatorColor: Colors.white,
-            backgroundColor: Colors.black,
             items: [
-              CrystalNavigationBarItem(
-                icon: HugeIcons.strokeRoundedHome01,
-                unselectedIcon: HugeIcons.strokeRoundedHome01,
-                selectedColor: Colors.red,
-                unselectedColor: Colors.white,
-              ),
-              CrystalNavigationBarItem(
-                icon: HugeIcons.strokeRoundedMegaphone02,
-                unselectedIcon: HugeIcons.strokeRoundedMegaphone02,
-                selectedColor: Colors.red,
-                unselectedColor: Colors.white,
-              ),
-              CrystalNavigationBarItem(
-                icon: HugeIcons.strokeRoundedCalendar03,
-                unselectedIcon: HugeIcons.strokeRoundedCalendar03,
-                selectedColor: Colors.red,
-                unselectedColor: Colors.white,
-              ),
-              CrystalNavigationBarItem(
-                icon: HugeIcons.strokeRoundedPlayList,
-                unselectedIcon: HugeIcons.strokeRoundedPlayList,
-                selectedColor: Colors.red,
-                unselectedColor: Colors.white,
-              ),
-              CrystalNavigationBarItem(
-                icon: HugeIcons.strokeRoundedSettings03,
-                unselectedIcon: HugeIcons.strokeRoundedSettings03,
-                selectedColor: Colors.red,
-                unselectedColor: Colors.white,
-              ),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedFire),
+                  title: const Text('Ignite'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedMegaphone02),
+                  title: const Text('Ann.'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedCalendar03),
+                  title: const Text('Event'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedPlayList),
+                  title: const Text('Video'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedSettings03),
+                  title: const Text('Setting'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
             ],
-          ),
+          ),        
           body: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),

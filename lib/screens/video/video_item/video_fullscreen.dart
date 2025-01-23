@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/datetime_helper.dart';
 import 'package:ignite/functions/size_config.dart';
+import 'package:ignite/main.dart';
 import 'package:ignite/model/Video.dart';
+import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:html/parser.dart' as html_parser;
@@ -126,6 +129,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
           icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
               size: 25, color: Colors.white),
           onPressed: () {
+            context.read<PipBloc>().add(RunPiP(videoObj: widget.videos));
             Navigator.pop(context);
           },
         ),
