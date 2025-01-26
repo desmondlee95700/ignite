@@ -4,7 +4,7 @@ import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/empty_state.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_bloc/event_bloc.dart';
-import 'package:ignite/screens/event/home_event_item.dart';
+import 'package:ignite/screens/event/event_item/home_event_item.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeEventSection extends StatefulWidget {

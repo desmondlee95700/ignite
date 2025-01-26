@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:ignite/model/Announcement.dart';
+import 'package:ignite/screens/annoucement/peek_view/peekview_manager.dart';
 
 class HomeAnnoucementItem extends StatelessWidget {
   const HomeAnnoucementItem({
@@ -14,8 +16,18 @@ class HomeAnnoucementItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var unescape = HtmlUnescape();
-    return InkWell(
+    return GestureDetector(
       onTap: () {},
+      onLongPress: () {
+        HapticFeedback.vibrate();
+        final peekViewManager = PeekViewManager(announcement: annoucements);
+        peekViewManager.showAnnouncementPeekView(context,
+            announcement: annoucements);
+      },
+      onLongPressUp: () {
+        final peekViewManager = PeekViewManager(announcement: annoucements);
+        peekViewManager.showFullView(context);
+      },
       child: Container(
         margin: const EdgeInsets.only(right: 5),
         child: Stack(

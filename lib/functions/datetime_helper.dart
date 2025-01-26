@@ -38,3 +38,12 @@ String getMonthShort(String date) {
   
   return shortMonths[monthIndex - 1]; // Return the short month name
 }
+
+int getYearFromDateString(String dateString) {
+  try {
+    DateTime date = DateTime.parse(dateString);
+    return date.year;
+  } catch (e) {
+    throw FormatException("Invalid date format: $dateString");
+  }
+}

@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Announcement.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AnnouncementPeekView extends StatelessWidget {
   final Announcement announcement;
@@ -57,15 +59,46 @@ class AnnouncementPeekView extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              child: CachedNetworkImage(
-                imageUrl: announcement.image!,
-                errorWidget: (context, url, error) => Image.asset(
-                  "assets/images/ignite_icon.png",
-                  fit: BoxFit.cover,
+            Stack(
+              children: [
+                // The image in the background
+                Container(
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: announcement.image!,
+                    errorWidget: (context, url, error) => Image.asset(
+                      "assets/images/ignite_icon.png",
+                      fit: BoxFit.cover,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                fit: BoxFit.cover,
-              ),
+                // The share icon overlaid on the image
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () async {
+                      await Share.share(announcement.title!);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(
+                            0.5), // Semi-transparent white background
+                        borderRadius:
+                            BorderRadius.circular(8), // Rounded corners
+                      ),
+                      padding: const EdgeInsets.all(
+                          6), // Add some padding around the icon
+                      child: const Icon(
+                        HugeIcons.strokeRoundedShare01,
+                        color: Colors.black, // Use black for better contrast
+                        size: 30, // Adjust the size of the icon as needed
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Container(
               // height: 80,

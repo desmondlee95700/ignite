@@ -120,8 +120,8 @@ class HomeEventItem extends StatelessWidget {
                 Positioned(
                   bottom: -25, // Moves the circle down outside the image
                   child: Container(
-                    height: 50,
-                    width: 50,
+                    height: 60,
+                    width: 60,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
@@ -136,6 +136,15 @@ class HomeEventItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
+                          getMonthShort(events.post_date
+                              .toString()), // Month abbreviation
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontFamily: 'Manrope',
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
                           getDay(events.post_date.toString()), // Day
                           style: const TextStyle(
                             fontSize: 18,
@@ -145,10 +154,10 @@ class HomeEventItem extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          getMonthShort(events.post_date
-                              .toString()), // Month abbreviation
+                          getYearFromDateString(events.post_date.toString())
+                              .toString(), // Month abbreviation
                           style: const TextStyle(
-                            fontSize: 8,
+                            fontSize: 10,
                             fontFamily: 'Manrope',
                             color: Colors.grey,
                           ),
