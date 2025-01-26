@@ -20,7 +20,7 @@ class VideoItem extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
-        if (context.read<PipBloc>().state.isPipActive) {
+        if (context.read<PipBloc>().state.isPipActive) {       
           context.read<PipBloc>().add(ClosePip());
           PictureInPicture.stopPiP();
         }

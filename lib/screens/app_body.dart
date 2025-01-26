@@ -111,7 +111,8 @@ class _AppBodyState extends State<AppBody> {
     PictureInPicture.startPiP(
       pipWidget: PiPWidget(
         onPiPClose: () {
-          context.read<PipBloc>().add(ClosePip());
+          // context.read<PipBloc>().add(ClosePip());
+          // PictureInPicture.stopPiP();
           print("Logged pip closed");
         },
         elevation: 0,
@@ -136,14 +137,17 @@ class _AppBodyState extends State<AppBody> {
                   child: GestureDetector(
                     onTap: () {
                       context.read<PipBloc>().add(ClosePip());
+                      PictureInPicture.stopPiP();
                     },
                     child: Container(
+                      width: 30,
+                      height: 30,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade500,
                         shape: BoxShape.circle,
                       ),
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.close, color: Colors.black),
+                      padding: const EdgeInsets.all(5.0),
+                      child: const Icon(Icons.close, color: Colors.black, size : 20),
                     ),
                   ),
                 ),
@@ -225,7 +229,7 @@ class _AppBodyState extends State<AppBody> {
                   activeColor: Colors.white,
                   inactiveColor: Colors.grey),
             ],
-          ),        
+          ),
           body: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
