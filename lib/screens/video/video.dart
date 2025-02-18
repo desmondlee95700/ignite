@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Album.dart';
+import 'package:ignite/screens/event/calendar_page.dart';
 import 'package:ignite/screens/video/video_type/conference_video.dart';
 import 'package:ignite/screens/video/video_type/lyrics_video.dart';
 import 'package:ignite/screens/video/video_type/music_video.dart';
@@ -45,19 +47,35 @@ class _VideoPageState extends State<VideoPage> {
       controller: widget.controller,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
-          const SliverAppBar(
+          SliverAppBar(
             floating: true,
             snap: true,
             surfaceTintColor: Colors.transparent,
             title: Row(
               children: [
-                Text(
+                const Text(
                   " | Videos",
                   style: TextStyle(
                     color: kPrimaryColor,
                     fontFamily: 'Manrope',
                     fontSize: 18,
                   ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        duration: const Duration(milliseconds: 600),
+                        reverseDuration: const Duration(milliseconds: 600),
+                        isIos: true,
+                        child: const CalendarPage(),
+                      ),
+                    );
+                  },
+                  child: const Icon(HugeIcons.strokeRoundedCalendar01,
+                      color: Colors.white),
                 ),
               ],
             ),

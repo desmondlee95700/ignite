@@ -67,7 +67,7 @@ class AnnouncementPeekView extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: announcement.image!,
                     errorWidget: (context, url, error) => Image.asset(
-                      "assets/images/ignite_icon.png",
+                      "assets/images/ignite_icon.jpg",
                       fit: BoxFit.cover,
                     ),
                     fit: BoxFit.cover,

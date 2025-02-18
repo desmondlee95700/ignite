@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/screens/annoucement/annoucement_bloc/announcement_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/screens/annoucement/annoucement_grid/announcement_grid.dart';
+import 'package:ignite/screens/event/calendar_page.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -40,19 +43,36 @@ class _AnnoucementPageState extends State<AnnoucementPage> {
       controller: widget.controller,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
-          const SliverAppBar(
+          SliverAppBar(
             floating: true,
             snap: true,
             surfaceTintColor: Colors.transparent,
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  " | Annoucement",
+                const Text(
+                  " | News",
                   style: TextStyle(
                     color: kPrimaryColor,
                     fontFamily: 'Manrope',
                     fontSize: 18,
                   ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        duration: const Duration(milliseconds: 600),
+                        reverseDuration: const Duration(milliseconds: 600),
+                        isIos: true,
+                        child: CalendarPage(),
+                      ),
+                    );
+                  },
+                  child: const Icon(HugeIcons.strokeRoundedCalendar01,
+                      color: Colors.white),
                 ),
               ],
             ),
@@ -150,7 +170,7 @@ class _AnnoucementPageState extends State<AnnoucementPage> {
                                 child: Text(
                                   errorMsg ?? "You have reached the bottom",
                                   textAlign: TextAlign.center,
-                                  style:  TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                     color: Colors.grey.shade500,

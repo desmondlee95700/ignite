@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_utils/background_event_wave.dart';
-import 'package:ignite/screens/home/home_utils/background_wave.dart';
 
 class SilverEventDetailsAppBar extends SliverPersistentHeaderDelegate {
   final Event events;

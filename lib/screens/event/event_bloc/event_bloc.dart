@@ -5,7 +5,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:stream_transform/stream_transform.dart';
 

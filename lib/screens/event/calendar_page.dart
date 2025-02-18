@@ -10,16 +10,14 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 
-class DiscoverPage extends StatefulWidget {
-  final ScrollController controller;
-
-  const DiscoverPage({Key? key, required this.controller}) : super(key: key);
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({Key? key}) : super(key: key);
 
   @override
-  State<DiscoverPage> createState() => _DiscoverPageState();
+  State<CalendarPage> createState() => _CalendarPageState();
 }
 
-class _DiscoverPageState extends State<DiscoverPage> {
+class _CalendarPageState extends State<CalendarPage> {
   final EventBloc eventBloc = EventBloc(httpClient: http.Client());
 
   DateTime _focusedDay = DateTime.now();
@@ -36,29 +34,26 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      controller: widget.controller,
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          const SliverAppBar(
-            floating: true,
-            snap: true,
-            surfaceTintColor: Colors.transparent,
-            title: Row(
-              children: [
-                Text(
-                  " | Event",
-                  style: TextStyle(
-                    color: kPrimaryColor,
-                    fontFamily: 'Manrope',
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          " | Event",
+          style: TextStyle(
+            color: kPrimaryColor,
+            fontFamily: 'Manrope',
+            fontSize: 18,
           ),
-        ];
-      },
+        ),
+        backgroundColor: darkThemeColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
+              size: 25, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: BlocProvider(
         create: (_) => eventBloc,
         child: BlocBuilder<EventBloc, EventState>(
@@ -237,7 +232,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         }),
         icon: const Icon(HugeIcons.strokeRoundedCircleArrowDown01,
             color: Colors.white),
-        dropdownColor: darkThemeColor,       
+        dropdownColor: darkThemeColor,
       ),
     );
   }

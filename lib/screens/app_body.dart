@@ -9,10 +9,10 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:ignite/screens/annoucement/annoucement.dart';
-import 'package:ignite/screens/event/event.dart';
 import 'package:ignite/screens/home/home.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/screens/settings/settings.dart';
+import 'package:ignite/screens/theme/theme.dart';
 import 'package:ignite/screens/video/video.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -52,7 +52,7 @@ class _AppBodyState extends State<AppBody> {
   List<Widget> tabPages(BuildContext context) => [
         HomePage(controller: _scrollControllers[0]!),
         AnnoucementPage(controller: _scrollControllers[1]!),
-        DiscoverPage(controller: _scrollControllers[2]!),
+        ThemePage(controller: _scrollControllers[2]!),
         VideoPage(controller: _scrollControllers[3]!),
         const SettingsPage(),
       ];
@@ -210,12 +210,12 @@ class _AppBodyState extends State<AppBody> {
                   inactiveColor: Colors.grey),
               FlashyTabBarItem(
                   icon: const Icon(HugeIcons.strokeRoundedMegaphone02),
-                  title: const Text('Ann.'),
+                  title: const Text('News'),
                   activeColor: Colors.white,
                   inactiveColor: Colors.grey),
               FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedCalendar03),
-                  title: const Text('Event'),
+                  icon: const Icon(HugeIcons.strokeRoundedAlbum01),
+                  title: const Text('Theme'),
                   activeColor: Colors.white,
                   inactiveColor: Colors.grey),
               FlashyTabBarItem(
