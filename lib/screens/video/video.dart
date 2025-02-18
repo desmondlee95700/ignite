@@ -52,6 +52,7 @@ class _VideoPageState extends State<VideoPage> {
             snap: true,
             surfaceTintColor: Colors.transparent,
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
                   " | Videos",
