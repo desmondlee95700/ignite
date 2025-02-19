@@ -82,14 +82,13 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               );
             } else if (state.status == EventStatus.success) {
-              // Build the event map for the calendar
               _events = _groupEventsByDate(state.events);
 
               return Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 24),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -99,93 +98,88 @@ class _CalendarPageState extends State<CalendarPage> {
                       ],
                     ),
                   ),
-                  TableCalendar(
-                    pageAnimationCurve: Curves.bounceIn,
-                    firstDay: DateTime(2000),
-                    lastDay: DateTime(2030),
-                    focusedDay: _focusedDay,
-                    calendarFormat: CalendarFormat.month,
-                    availableCalendarFormats: const {
-                      CalendarFormat.month: 'Month',
-                    },
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    eventLoader: (day) {
-                      final normalizedDay =
-                          DateTime(day.year, day.month, day.day);
-                      return _events[normalizedDay] ?? [];
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDay = DateTime(
-                          selectedDay.year,
-                          selectedDay.month,
-                          selectedDay.day,
-                        );
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    headerStyle: const HeaderStyle(
-                      formatButtonVisible:
-                          false, // Hide the format button (optional)
-                      titleTextStyle: TextStyle(
-                        color: Colors.white, // White color for the month name
-                        fontSize: 18,
-                        fontFamily: "Manrope", // Adjust the size of the title
-                        fontWeight: FontWeight.bold,
+                  SizedBox(
+                    height: 360, // Fixed height to improve performance
+                    child: TableCalendar(
+                      pageAnimationCurve:
+                          Curves.easeInOut, // Smoother animation
+                      firstDay: DateTime(2000),
+                      lastDay: DateTime(2030),
+                      focusedDay: _focusedDay,
+                      calendarFormat: CalendarFormat.month,
+                      availableCalendarFormats: const {
+                        CalendarFormat.month: 'Month',
+                      },
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
+                      eventLoader: (day) {
+                        final normalizedDay =
+                            DateTime(day.year, day.month, day.day);
+                        return _events[normalizedDay] ?? [];
+                      },
+                      onDaySelected: (selectedDay, focusedDay) {
+                        setState(() {
+                          _selectedDay = DateTime(
+                            selectedDay.year,
+                            selectedDay.month,
+                            selectedDay.day,
+                          );
+                          _focusedDay = focusedDay;
+                        });
+                      },
+                      headerStyle: const HeaderStyle(
+                        formatButtonVisible: false,
+                        titleTextStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: "Manrope",
+                          fontWeight: FontWeight.bold,
+                        ),
+                        leftChevronIcon: Icon(
+                          HugeIcons.strokeRoundedCircleArrowLeft01,
+                          color: Colors.white,
+                        ),
+                        rightChevronIcon: Icon(
+                          HugeIcons.strokeRoundedCircleArrowRight01,
+                          color: Colors.white,
+                        ),
                       ),
-                      leftChevronIcon: Icon(
-                        HugeIcons.strokeRoundedCircleArrowLeft01,
-                        color: Colors.white, // Change color of the left arrow
-                      ),
-                      rightChevronIcon: Icon(
-                        HugeIcons.strokeRoundedCircleArrowRight01,
-                        color: Colors.white, // Change color of the right arrow
-                      ),
-                    ),
-                    calendarStyle: const CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      markerDecoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                      todayTextStyle: TextStyle(
-                        color: Colors.white, // White text for today
-                      ),
-                      defaultTextStyle: TextStyle(
-                        color: Colors.grey, // White text for default days
-                      ),
-                      weekendTextStyle: TextStyle(
-                        color: Colors
-                            .black, // White text for weekend days (if needed)
+                      calendarStyle: const CalendarStyle(
+                        todayDecoration: BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                        ),
+                        selectedDecoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        markerDecoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                        todayTextStyle: TextStyle(
+                          color: Colors.white,
+                        ),
+                        defaultTextStyle: TextStyle(
+                          color: Colors.grey,
+                        ),
+                        weekendTextStyle: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
                   Expanded(
-                    child: ListView(
+                    child: ListView.builder(
+                      physics:
+                          const BouncingScrollPhysics(), // Improves smoothness
                       padding: const EdgeInsets.all(8.0),
-                      children: (_events[_selectedDay] ?? []).isEmpty
-                          ? [
-                              const Center(
-                                  child: Text(
-                                "No events for this day.",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: "Manrope",
-                                    fontWeight: FontWeight.bold),
-                              ))
-                            ]
-                          : (_events[_selectedDay] ?? [])
-                              .map((event) => EventCalendarCard(
-                                    events: event,
-                                  ))
-                              .toList(),
+                      itemCount: (_events[_selectedDay] ?? []).length,
+                      itemBuilder: (context, index) {
+                        final event = _events[_selectedDay]![index];
+                        return EventCalendarCard(events: event);
+                      },
                     ),
                   ),
                 ],

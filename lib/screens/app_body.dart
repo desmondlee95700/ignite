@@ -7,6 +7,7 @@ import 'package:flutter_in_app_pip/pip_view_corner.dart';
 import 'package:flutter_in_app_pip/pip_widget.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
+import 'package:ignite/functions/exit_app.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:ignite/screens/annoucement/annoucement.dart';
 import 'package:ignite/screens/home/home.dart';
@@ -163,7 +164,7 @@ class _AppBodyState extends State<AppBody> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        //showExit(context);
+        showExit(context);
         return false;
       },
       child: BlocListener<PipBloc, PipState>(

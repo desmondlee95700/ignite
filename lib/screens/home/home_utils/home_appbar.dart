@@ -36,15 +36,17 @@ class SilverAppHomeBar extends SliverPersistentHeaderDelegate {
                 left: 15,
                 right: 15,
               ),
-              child: Text(
-                "A movement to see generations encounter Jesus 🔥",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Manrope',
-                  color: Colors.white,
+              child: Center(
+                child: Text(
+                  "A movement to see generations encounter Jesus 🔥",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Manrope',
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -60,10 +62,9 @@ class SilverAppHomeBar extends SliverPersistentHeaderDelegate {
               children: [
                 Expanded(
                   child: AnimatedOpacity(
-                    opacity: adjustedShrinkOffset > 50 ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: const SizedBox()
-                  ),
+                      opacity: adjustedShrinkOffset > 50 ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: const SizedBox()),
                 ),
               ],
             ),

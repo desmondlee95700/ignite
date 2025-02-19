@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,22 +20,58 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AnnouncementBloc announcementBloc =
       AnnouncementBloc(httpClient: http.Client());
 
   final EventBloc eventBloc = EventBloc(httpClient: http.Client());
 
+  late AnimationController fadeController;
+  late AnimationController slideController;
+  late AnimationController scaleController;
+  late Animation<Offset> slideAnimation;
+  late Animation<double> scaleAnimation;
+
   @override
   void initState() {
+    super.initState();
     announcementBloc.add(FetchAnnouncement());
     eventBloc.add(FetchEvent());
 
-    super.initState();
+    fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..forward();
+
+    slideController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
+            .animate(CurvedAnimation(
+      parent: slideController,
+      curve: Curves.easeOut,
+    ));
+    slideController.forward();
+
+    scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    scaleAnimation =
+        Tween<double>(begin: 0.8, end: 1.0).animate(CurvedAnimation(
+      parent: scaleController,
+      curve: Curves.easeOutBack,
+    ));
+    scaleController.forward();
   }
 
   @override
   void dispose() {
+    fadeController.dispose();
+    slideController.dispose();
+    scaleController.dispose();
     super.dispose();
   }
 
@@ -47,7 +82,6 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      //remove safe area for extend image behind appbar
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return <Widget>[
@@ -60,12 +94,8 @@ class _HomePageState extends State<HomePage> {
         body: RefreshIndicator.adaptive(
           color: kPrimaryColor,
           onRefresh: () async {
-            announcementBloc.add(FetchAnnouncement(
-              retrying: true,
-            ));
-            eventBloc.add(FetchEvent(
-              retrying: true,
-            ));
+            announcementBloc.add(FetchAnnouncement(retrying: true));
+            eventBloc.add(FetchEvent(retrying: true));
           },
           child: MultiBlocProvider(
             providers: [
@@ -81,81 +111,106 @@ class _HomePageState extends State<HomePage> {
               child: CustomScrollView(
                 physics: const ClampingScrollPhysics(),
                 slivers: [
+                  // Fade In Effect
                   SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      child: BlocBuilder<AnnouncementBloc, AnnouncementState>(
-                        builder: (context, state) {
-                          String? title = state.title;
-                          return Row(
-                            children: [
-                              Text(
-                                title ?? "Hot Stuff",
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
+                    child: AnimatedOpacity(
+                      opacity: 1.0,
+                      duration: const Duration(milliseconds: 600),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child:
+                            BlocBuilder<AnnouncementBloc, AnnouncementState>(
+                          builder: (context, state) {
+                            String? title = state.title;
+                            return Row(
+                              children: [
+                                Text(
+                                  title ?? "Hot Stuff",
+                                  style: const TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: getProportionateScreenWidth(10)),
+                                const Icon(
+                                  HugeIcons.strokeRoundedMegaphone02,
+                                  size: 18,
                                   color: Colors.white,
                                 ),
-                              ),
-                              SizedBox(width: getProportionateScreenWidth(10)),
-                              const Icon(
-                                HugeIcons.strokeRoundedMegaphone02,
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                            ],
-                          );
-                        },
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
+                  
                   SliverToBoxAdapter(
                       child: SizedBox(height: getProportionateScreenHeight(5))),
+
+                  // Slide In Animation
                   SliverToBoxAdapter(
-                    child: HomeAnnoucementSection(
-                      announcementBloc: announcementBloc,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                      child:
-                          SizedBox(height: getProportionateScreenHeight(20))),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 5),
-                      child: BlocBuilder<EventBloc, EventState>(
-                        builder: (context, state) {
-                          String? title = state.title;
-                          return Row(
-                            children: [
-                              Text(
-                                title ?? "Hot Stuff",
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(width: getProportionateScreenWidth(10)),
-                              const Icon(
-                                HugeIcons.strokeRoundedCalendar02,
-                                size: 18,
-                                color: Colors.white,
-                              ),
-                            ],
-                          );
-                        },
+                    child: SlideTransition(
+                      position: slideAnimation,
+                      child: HomeAnnoucementSection(
+                        announcementBloc: announcementBloc,
                       ),
                     ),
                   ),
+
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: getProportionateScreenHeight(20))),
+
+                  // Scale Effect
+                  SliverToBoxAdapter(
+                    child: ScaleTransition(
+                      scale: scaleAnimation,
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child: BlocBuilder<EventBloc, EventState>(
+                          builder: (context, state) {
+                            String? title = state.title;
+                            return Row(
+                              children: [
+                                Text(
+                                  title ?? "Hot Stuff",
+                                  style: const TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                    width: getProportionateScreenWidth(10)),
+                                const Icon(
+                                  HugeIcons.strokeRoundedCalendar02,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+
                   SliverToBoxAdapter(
                       child: SizedBox(height: getProportionateScreenHeight(5))),
+
+                  // Slide In for Events Section
                   SliverToBoxAdapter(
-                    child: HomeEventSection(
-                      eventBloc: eventBloc,
+                    child: SlideTransition(
+                      position: slideAnimation,
+                      child: HomeEventSection(
+                        eventBloc: eventBloc,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
