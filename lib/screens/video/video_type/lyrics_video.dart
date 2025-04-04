@@ -32,7 +32,7 @@ class _LyricsVideoPageState extends State<LyricsVideoPage>
   @override
   void initState() {
     super.initState();
-    videoBloc.add(FetchVideo(type: "lyrics"));
+    videoBloc.add(FetchVideo(type: "lyricvideo"));
   }
 
   @override

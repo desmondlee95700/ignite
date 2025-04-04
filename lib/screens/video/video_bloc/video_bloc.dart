@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -80,60 +81,62 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
 
   Future<dynamic> _fetchReels({String? nextKey, String? type}) async {
     try {
-      // String url = "${apiURL}posts/video/random";
+   
+      final db = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot;
 
-      // if (nextKey != null) {
-      //   url += "?next=$nextKey";
-      // }
-
-      // final response = await http.get(Uri.parse(url));
-
-      // if (response.statusCode == 200) {
-      //   final body = json.decode(response.body);
-      //   final List list = body['posts'];
-      //   final String? nextKey = body['next'];
-
-      //   final reels = list.map((dynamic articles) {
-      //     final map = articles as Map<String, dynamic>;
-      //     return Reels.fromJson(map);
-      //   }).toList();
-
-      //   bool hasReachedMax = false;
-      //   if (nextKey == null || reels.isEmpty) {
-      //     hasReachedMax = true;
-      //   }
-
-      //   return ReelsApiDetails(
-      //     reels: reels,
-      //     nextKey: nextKey,
-      //     hasReachedMax: hasReachedMax,
-      //   );
-      // } else {
-      //   return "Temporarily unable to load Sinar Daily, please try again later...";
-      // }
-      // Load JSON from local asset
-
-      String fileName;
-
-      // Choose the file based on the type
+      String collectionName;
+      String documentId;
       if (type == "musicvideo") {
-        fileName = 'assets/json_model/music_video.json';
-      } else if (type == "conference") {
-        fileName = 'assets/json_model/conference_video.json';
+        collectionName = 'music_video';
+        documentId = 'music_video_posts';
+      } else if (type == "lyricvideo") {
+        collectionName = 'lyric_video';
+        documentId = 'lyric_video_posts';
+      } else if (type == "conferencevideo") {
+        collectionName = 'conference_video';
+        documentId = 'conference_video_posts';
       } else {
-        fileName = 'assets/json_model/lyrics_video.json';
+        throw ArgumentError('Unsupported type: $type');
       }
 
-      // Load the chosen JSON file
-      String data = await rootBundle.loadString(fileName);
-      final jsonResult = jsonDecode(data);
+      if (nextKey != null) {
+        final lastDocument = await db
+            .collection(collectionName)
+            .doc(documentId) 
+            .get();
 
-      final List list = jsonResult['posts'];
-      final String? nextKey = jsonResult['next'];
+        querySnapshot = await db
+            .collection(collectionName)
+            .orderBy('post_date')
+            .startAfterDocument(lastDocument) 
+            .get();
+      } else {
+  
+        querySnapshot = await db.collection(collectionName).get();
+      }
+
+      final List list = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['posts'] ?? []; 
+          })
+          .expand((element) => element)
+          .toList();
+
+      if (list.length <= 10) {
+        nextKey = null;
+        print("Firebase is here");
+      } else {
+              print("Firebase is here 2 $nextKey");
+        nextKey = null;
+           
+      }
 
       final videos = list.map((dynamic articles) {
         final map = articles as Map<String, dynamic>;
-        return Video.fromJson(map);
+        return Video.fromJson(
+            map); 
       }).toList();
 
       bool hasReachedMax = false;
@@ -147,8 +150,8 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         hasReachedMax: hasReachedMax,
       );
     } catch (error, st) {
-      print(error);
-      print(st);
+      print("Firebase $error");
+      print("Firebase $st");
       return "Temporarily unable to load Ignite Content due to technical difficulties, please try again later...";
     }
   }

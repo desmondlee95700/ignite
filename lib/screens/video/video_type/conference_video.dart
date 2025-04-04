@@ -32,7 +32,7 @@ class _ConferenceVideoPageState extends State<ConferenceVideoPage>
   @override
   void initState() {
     super.initState();
-    videoBloc.add(FetchVideo(type: "conference"));
+    videoBloc.add(FetchVideo(type: "conferencevideo"));
   }
 
   @override

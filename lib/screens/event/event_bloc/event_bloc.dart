@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -21,8 +22,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class EventBloc extends Bloc<EventEvent, EventState> {
-  EventBloc({required this.httpClient})
-      : super(const EventState()) {
+  EventBloc({required this.httpClient}) : super(const EventState()) {
     on<FetchEvent>(_onEventFetched,
         transformer: throttleDroppable(throttleDuration));
   }
@@ -78,46 +78,78 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     }
   }
 
+  void addMusicVideosToFirestore() async {
+    // Reference to the Firestore collection where you want to store the data
+    final CollectionReference musicVideosCollection =
+        FirebaseFirestore.instance.collection('event_news');
+
+    // The data to add
+    Map<String, dynamic> musicVideoData = {
+      "title": "Latest Events",
+      "data": [
+        {
+          "id": 1,
+          "post_date": "2024-10-26",
+          "time": "9.00 PM",
+          "title": "CHAPEL WORSHIP",
+          "image": "https://i.imghippo.com/files/iBu3780kF.jpg"
+        },
+        {
+          "id": 2,
+          "time": "4.30PM",
+          "post_date": "2023-08-26",
+          "title": "KINGDOM",
+          "image": "https://i.imghippo.com/files/HWq4972dw.jpg"
+        }
+      ]
+    };
+
+    try {
+      // Add the data to Firestore
+      await musicVideosCollection.doc('event_news_posts').set(musicVideoData);
+      print("Music videos added to Firestore");
+    } catch (e) {
+      print("Error adding music videos: $e");
+    }
+  }
+
   Future<dynamic> _fetchCollection() async {
     try {
-      // String url = "${apiURL}main_topic/v2";
+      final db = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot;
 
-      // final response = await http.get(Uri.parse(url));
+      querySnapshot = await db.collection("event_news").get();
 
-      // if (response.statusCode == 200) {
-      //   final body = json.decode(response.body);
-      //   final List? list = body['data'];
-      //   final String? title = body['title'];
+      final List list = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['data'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
 
-      //   final List<Announcement> announcements = list != null
-      //       ? list.map((dynamic announcements) {
-      //           final map = announcements as Map<String, dynamic>;
-      //           return Announcement.fromJson(map);
-      //         }).toList()
-      //       : [];
+      final String title = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['title'] as String?; // Extract the title field
+          })
+          .where((title) => title != null) // Filter out any null titles
+          .join(', ');
 
-      //   return AnnnouncementAPIDetails(
-      //     announcements: announcements,
-      //     title: title,
-      //   );
-      // } else {
-      //   return "Temporarily unable to load Sinar Daily, please try again later...";
-      // }
+      final events = list.map((dynamic articles) {
+        final map = articles as Map<String, dynamic>;
+        return Event.fromJson(map);
+      }).toList();
+
+      print("Firebase title $title");
 
       // Load the chosen JSON file
-      String data = await rootBundle
-          .loadString('assets/json_model/event_data.json');
-      final jsonResult = jsonDecode(data);
+      // String data =
+      //     await rootBundle.loadString('assets/json_model/event_data.json');
+      // final jsonResult = jsonDecode(data);
 
-      final List? list = jsonResult['data'];
-      final String? title = jsonResult['title'];
-
-      final List<Event> events = list != null
-          ? list.map((dynamic events) {
-              final map = events as Map<String, dynamic>;
-              return Event.fromJson(map);
-            }).toList()
-          : [];
+      // final List? list = jsonResult['data'];
+      // final String? title = jsonResult['title'];
 
       bool hasReachedMax = false;
       String nextKey = "";
