@@ -129,7 +129,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
           icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
               size: 25, color: Colors.white),
           onPressed: () {
-            context.read<PipBloc>().add(RunPiP(videoObj: widget.videos));
+            //context.read<PipBloc>().add(RunPiP(videoObj: widget.videos));
             Navigator.pop(context);
           },
         ),
