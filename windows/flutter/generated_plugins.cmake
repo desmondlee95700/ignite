@@ -3,7 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  cloud_firestore
   firebase_core
+  firebase_storage
   flutter_inappwebview_windows
   permission_handler_windows
   share_plus

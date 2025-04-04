@@ -72,37 +72,37 @@ class _AppBodyState extends State<AppBody> {
     super.dispose();
   }
 
-  void pipPlayer(Video video) {
+  void pipPlayer(BuildContext context, Video video) {
     late YoutubePlayerController _youtubePlayerController;
 
     try {
       _youtubePlayerController = YoutubePlayerController(
         initialVideoId: video.video_id,
         flags: const YoutubePlayerFlags(
-            mute: false,
-            autoPlay: true,
-            disableDragSeek: true,
-            hideThumbnail: false,
-            loop: false,
-            isLive: false,
-            forceHD: false,
-            enableCaption: false),
+          mute: false,
+          autoPlay: false,
+          disableDragSeek: true,
+          hideThumbnail: false,
+          loop: false,
+          isLive: false,
+          forceHD: false,
+          enableCaption: false,
+        ),
       );
     } catch (e, stackTrace) {
       print(stackTrace);
       print(e);
+      return;
     }
 
     PictureInPicture.updatePiPParams(
       pipParams: PiPParams(
-        pipWindowHeight: 144,
-        pipWindowWidth: 256,
+        pipWindowHeight: 120,
+        pipWindowWidth: 250,
         bottomSpace: 64,
-        leftSpace: 64,
-        rightSpace: 64,
+        leftSpace: 12,
+        rightSpace: 12,
         topSpace: 64,
-        maxSize: Size(256, 144),
-        minSize: Size(144, 108),
         movable: true,
         resizable: false,
         initialCorner: PIPViewCorner.bottomRight,
@@ -110,52 +110,52 @@ class _AppBodyState extends State<AppBody> {
     );
 
     PictureInPicture.startPiP(
-      pipWidget: PiPWidget(
-        onPiPClose: () {
-          // context.read<PipBloc>().add(ClosePip());
-          // PictureInPicture.stopPiP();
-          print("Logged pip closed");
-        },
-        elevation: 0,
-        pipBorderRadius: 10,
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.black, borderRadius: BorderRadius.circular(12)),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Stack(
-              children: [
-                Container(
+      pipWidget: Overlay(
+        initialEntries: [
+          OverlayEntry(
+            builder: (context) => PiPWidget(
+              onPiPClose: () {
+                context.read<PipBloc>().add(ClosePip());
+                PictureInPicture.stopPiP();
+                print("Logged pip closed");
+              },
+              elevation: 0,
+              pipBorderRadius: 15,
+              child: Container(
+                decoration: BoxDecoration(
                   color: Colors.black,
-                  child: YoutubePlayer(
-                    controller: _youtubePlayerController,
-                    showVideoProgressIndicator: true,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Positioned(
-                  top: 8.0,
-                  right: 8.0,
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<PipBloc>().add(ClosePip());
-                      PictureInPicture.stopPiP();
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade500,
-                        shape: BoxShape.circle,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: Colors.black,
+                        child: YoutubePlayer(
+                          controller: _youtubePlayerController,
+                          showVideoProgressIndicator: true,
+                        ),
                       ),
-                      padding: const EdgeInsets.all(5.0),
-                      child: const Icon(Icons.close, color: Colors.black, size : 20),
-                    ),
+                      Positioned(
+                        top: 8.0,
+                        right: 8.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.read<PipBloc>().add(ClosePip());
+                            PictureInPicture.stopPiP();
+                          },
+                          child: const Icon(Icons.close,
+                              color: Colors.white, size: 20),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -171,7 +171,12 @@ class _AppBodyState extends State<AppBody> {
         listener: (context, state) {
           if (state.video != null) {
             print("Logged is here not null");
-            pipPlayer(state.video!);
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Future.delayed(Duration.zero, () {
+                pipPlayer(context, state.video!);
+              });
+            });
           } else {
             print("Logged is here");
           }
