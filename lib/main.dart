@@ -13,7 +13,7 @@ import 'package:ignite/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
+  await Firebase.initializeApp();
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
