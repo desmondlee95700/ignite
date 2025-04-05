@@ -92,8 +92,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
       _idController = TextEditingController();
       _videoMetaData = const YoutubeMetaData();
     } catch (e, stackTrace) {
-      print(stackTrace);
-      print(e);
+      print("YoutubeController $e");
     }
   }
 

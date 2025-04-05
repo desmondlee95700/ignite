@@ -4,6 +4,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:ignite/functions/datetime_helper.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_details.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomeEventItem extends StatelessWidget {
@@ -121,10 +122,11 @@ class HomeEventItem extends StatelessWidget {
                   bottom: -25, // Moves the circle down outside the image
                   child: Container(
                     height: 60,
-                    width: 60,
+                    width: 80,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      shape: BoxShape.circle,
+                      shape: BoxShape.rectangle,
+                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
@@ -136,8 +138,9 @@ class HomeEventItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          getMonthShort(events.post_date
-                              .toString()), // Month abbreviation
+                          getMonthShort(DateFormat('yyyy-MM-dd').format(
+                            events.start_post_date!.toDate().toLocal(),
+                          )), // Month abbreviation
                           style: const TextStyle(
                             fontSize: 10,
                             fontFamily: 'Manrope',
@@ -145,7 +148,11 @@ class HomeEventItem extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          getDay(events.post_date.toString()), // Day
+                          "${getDay(DateFormat('yyyy-MM-dd').format(
+                            events.start_post_date!.toDate().toLocal(),
+                          ))} - ${getDay(DateFormat('yyyy-MM-dd').format(
+                            events.end_post_date!.toDate().toLocal(),
+                          ))}",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -154,8 +161,9 @@ class HomeEventItem extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          getYearFromDateString(events.post_date.toString())
-                              .toString(), // Month abbreviation
+                          getYearFromDateString(DateFormat('yyyy-MM-dd').format(
+                            events.start_post_date!.toDate().toLocal(),
+                          )).toString(), // Month abbreviation
                           style: const TextStyle(
                             fontSize: 10,
                             fontFamily: 'Manrope',
@@ -189,7 +197,7 @@ class HomeEventItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                "${events.time}",
+                getTimeFromTimestamp(events.start_post_date!).toString(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

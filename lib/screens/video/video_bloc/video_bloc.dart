@@ -126,9 +126,7 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
 
       if (list.length <= 10) {
         nextKey = null;
-        print("Firebase is here");
       } else {
-              print("Firebase is here 2 $nextKey");
         nextKey = null;
            
       }
@@ -150,8 +148,7 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         hasReachedMax: hasReachedMax,
       );
     } catch (error, st) {
-      print("Firebase $error");
-      print("Firebase $st");
+      print("Video bloc $error");
       return "Temporarily unable to load Ignite Content due to technical difficulties, please try again later...";
     }
   }

@@ -1,20 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/datetime_helper.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_details.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class EventCalendarCard extends StatelessWidget {
   final Event events;
+  final DateTime selectedDay;
 
-  const EventCalendarCard({
-    Key? key,
-    required this.events,
-  }) : super(key: key);
+  const EventCalendarCard(
+      {Key? key, required this.events, required this.selectedDay})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String _getEventTimeBasedOnSelectedDate(
+        Timestamp? startDate, Timestamp? endDate, DateTime? selectedDay) {
+      if (startDate == null || selectedDay == null)
+        return "No start date available";
+
+      // Convert both start and end timestamps to DateTime objects
+      DateTime startDateTime = startDate.toDate().toLocal();
+      DateTime? endDateTime = endDate?.toDate().toLocal();
+
+      // Normalize the selected date to just the year, month, and day (ignoring time)
+      DateTime normalizedSelectedDate =
+          DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+
+      // Normalize the event start date and end date to ignore time part
+      DateTime normalizedStartDateTime =
+          DateTime(startDateTime.year, startDateTime.month, startDateTime.day);
+      DateTime? normalizedEndDateTime = endDateTime != null
+          ? DateTime(endDateTime.year, endDateTime.month, endDateTime.day)
+          : null;
+
+      // If the selected date matches the normalized start date
+      if (normalizedSelectedDate.isAtSameMomentAs(normalizedStartDateTime)) {
+        return "Start Time: ${DateFormat('h:mm a').format(startDateTime)}";
+      }
+
+      // If the selected date matches the normalized end date
+      if (normalizedEndDateTime != null &&
+          normalizedSelectedDate.isAtSameMomentAs(normalizedEndDateTime)) {
+        return "Start Time: ${DateFormat('h:mm a').format(endDateTime!)}";
+      }
+
+      // If the selected date doesn't match the start or end date, return a default message
+      return "No event on this date";
+    }
+
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -53,7 +90,9 @@ class EventCalendarCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      "Ignite ${getYearFromDateString(events.post_date.toString()).toString()}",
+                      "Ignite ${getYearFromDateString(DateFormat('yyyy-MM-dd').format(
+                        events.start_post_date!.toDate().toLocal(),
+                      )).toString()}",
                       style: const TextStyle(
                           color: Colors.red,
                           fontFamily: "Manrope",
@@ -72,13 +111,19 @@ class EventCalendarCard extends StatelessWidget {
                       Icon(HugeIcons.strokeRoundedClock01,
                           size: 16, color: Colors.grey[500]),
                       const SizedBox(width: 6),
-                      Text(events.time!,
-                          style: const TextStyle(
-                              color: Colors.grey,
-                              fontFamily: "Manrope",
-                              fontSize: 12)),
+                      Text(
+                        _getEventTimeBasedOnSelectedDate(
+                          events.start_post_date,
+                          events.end_post_date,
+                          selectedDay, // The selected date from the calendar
+                        ),
+                        style: const TextStyle(
+                            color: Colors.grey,
+                            fontFamily: "Manrope",
+                            fontSize: 12),
+                      ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

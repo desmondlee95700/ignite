@@ -178,7 +178,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       itemCount: (_events[_selectedDay] ?? []).length,
                       itemBuilder: (context, index) {
                         final event = _events[_selectedDay]![index];
-                        return EventCalendarCard(events: event);
+                        return EventCalendarCard(events: event, selectedDay: _selectedDay!,);
                       },
                     ),
                   ),
@@ -275,24 +275,34 @@ class _CalendarPageState extends State<CalendarPage> {
 
     for (var event in events) {
       try {
-        final eventDate = DateTime.parse(event.post_date!).toLocal();
-        // Normalize the eventDate to remove the time part
-        final normalizedEventDate =
-            DateTime(eventDate.year, eventDate.month, eventDate.day);
+        // Normalize the start and end dates to remove the time part
+        final startDate = event.start_post_date!.toDate().toLocal();
+        final endDate = event.end_post_date?.toDate().toLocal() ??
+            startDate; // Use start date if end date is null
 
-        if (groupedEvents[normalizedEventDate] == null) {
-          groupedEvents[normalizedEventDate] = [];
+        // Normalize both start and end dates
+        final normalizedStartDate =
+            DateTime(startDate.year, startDate.month, startDate.day);
+        final normalizedEndDate =
+            DateTime(endDate.year, endDate.month, endDate.day);
+
+        // Add the event to the start date
+        if (groupedEvents[normalizedStartDate] == null) {
+          groupedEvents[normalizedStartDate] = [];
         }
-        groupedEvents[normalizedEventDate]!.add(event);
+        groupedEvents[normalizedStartDate]!.add(event);
+
+        // If the end date is different from the start date, add the event to the end date as well
+        if (normalizedEndDate != normalizedStartDate) {
+          if (groupedEvents[normalizedEndDate] == null) {
+            groupedEvents[normalizedEndDate] = [];
+          }
+          groupedEvents[normalizedEndDate]!.add(event);
+        }
       } catch (e) {
-        print("Error parsing event date: ${event.post_date}, Error: $e");
+         print("Error parsing event date : $e");
       }
     }
-
-    print("Grouped Events:");
-    groupedEvents.forEach((key, value) {
-      print("${key.toLocal().toIso8601String()} : ${value.length} events");
-    });
 
     return groupedEvents;
   }

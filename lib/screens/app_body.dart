@@ -117,7 +117,6 @@ class _AppBodyState extends State<AppBody> {
               onPiPClose: () {
                 context.read<PipBloc>().add(ClosePip());
                 PictureInPicture.stopPiP();
-                print("Logged pip closed");
               },
               elevation: 0,
               pipBorderRadius: 15,
@@ -170,15 +169,11 @@ class _AppBodyState extends State<AppBody> {
       child: BlocListener<PipBloc, PipState>(
         listener: (context, state) {
           if (state.video != null) {
-            print("Logged is here not null");
-
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Future.delayed(Duration.zero, () {
                 pipPlayer(context, state.video!);
               });
             });
-          } else {
-            print("Logged is here");
           }
         },
         child: Scaffold(

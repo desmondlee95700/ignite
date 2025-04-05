@@ -47,7 +47,7 @@ class _VideoPageState extends State<VideoPage> {
       controller: widget.controller,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
-          SliverAppBar(
+          const SliverAppBar(
             floating: true,
             snap: true,
             surfaceTintColor: Colors.transparent,
@@ -62,22 +62,22 @@ class _VideoPageState extends State<VideoPage> {
                     fontSize: 18,
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        duration: const Duration(milliseconds: 600),
-                        reverseDuration: const Duration(milliseconds: 600),
-                        isIos: true,
-                        child: const CalendarPage(),
-                      ),
-                    );
-                  },
-                  child: const Icon(HugeIcons.strokeRoundedCalendar01,
-                      color: Colors.white),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       PageTransition(
+                //         type: PageTransitionType.rightToLeft,
+                //         duration: const Duration(milliseconds: 600),
+                //         reverseDuration: const Duration(milliseconds: 600),
+                //         isIos: true,
+                //         child: const CalendarPage(),
+                //       ),
+                //     );
+                //   },
+                //   child: const Icon(HugeIcons.strokeRoundedCalendar01,
+                //       color: Colors.white),
+                // ),
               ],
             ),
           ),

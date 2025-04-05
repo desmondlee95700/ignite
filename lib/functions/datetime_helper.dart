@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 String convertDateFormat(String inputDate) {
@@ -46,4 +47,15 @@ int getYearFromDateString(String dateString) {
   } catch (e) {
     throw FormatException("Invalid date format: $dateString");
   }
+}
+
+String getTimeFromTimestamp(Timestamp timestamp) {
+  final dateTime = timestamp.toDate().toLocal(); // Convert to local time (MYT)
+
+  // Check if the time is exactly 12:00 AM
+  if (dateTime.hour == 0 && dateTime.minute == 0) {
+    return 'To be announced';
+  }
+
+  return DateFormat('h:mm a').format(dateTime);  // Example: "7:30 PM"
 }

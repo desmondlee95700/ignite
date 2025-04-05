@@ -78,40 +78,40 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     }
   }
 
-  void addMusicVideosToFirestore() async {
-    // Reference to the Firestore collection where you want to store the data
-    final CollectionReference musicVideosCollection =
-        FirebaseFirestore.instance.collection('event_news');
+  // void addMusicVideosToFirestore() async {
+  //   // Reference to the Firestore collection where you want to store the data
+  //   final CollectionReference musicVideosCollection =
+  //       FirebaseFirestore.instance.collection('event_news');
 
-    // The data to add
-    Map<String, dynamic> musicVideoData = {
-      "title": "Latest Events",
-      "data": [
-        {
-          "id": 1,
-          "post_date": "2024-10-26",
-          "time": "9.00 PM",
-          "title": "CHAPEL WORSHIP",
-          "image": "https://i.imghippo.com/files/iBu3780kF.jpg"
-        },
-        {
-          "id": 2,
-          "time": "4.30PM",
-          "post_date": "2023-08-26",
-          "title": "KINGDOM",
-          "image": "https://i.imghippo.com/files/HWq4972dw.jpg"
-        }
-      ]
-    };
+  //   // The data to add
+  //   Map<String, dynamic> musicVideoData = {
+  //     "title": "Latest Events",
+  //     "data": [
+  //       {
+  //         "id": 1,
+  //         "post_date": "2024-10-26",
+  //         "time": "9.00 PM",
+  //         "title": "CHAPEL WORSHIP",
+  //         "image": "https://i.imghippo.com/files/iBu3780kF.jpg"
+  //       },
+  //       {
+  //         "id": 2,
+  //         "time": "4.30PM",
+  //         "post_date": "2023-08-26",
+  //         "title": "KINGDOM",
+  //         "image": "https://i.imghippo.com/files/HWq4972dw.jpg"
+  //       }
+  //     ]
+  //   };
 
-    try {
-      // Add the data to Firestore
-      await musicVideosCollection.doc('event_news_posts').set(musicVideoData);
-      print("Music videos added to Firestore");
-    } catch (e) {
-      print("Error adding music videos: $e");
-    }
-  }
+  //   try {
+  //     // Add the data to Firestore
+  //     await musicVideosCollection.doc('event_news_posts').set(musicVideoData);
+  //     print("Music videos added to Firestore");
+  //   } catch (e) {
+  //     print("Error adding music videos: $e");
+  //   }
+  // }
 
   Future<dynamic> _fetchCollection() async {
     try {
@@ -141,15 +141,28 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         return Event.fromJson(map);
       }).toList();
 
-      print("Firebase title $title");
+      // Sort events by year (descending order) and then by start_post_date
+      events.sort((a, b) {
+        final dateA =
+            a.start_post_date; // Assuming start_post_date is a Timestamp
+        final dateB = b.start_post_date;
 
-      // Load the chosen JSON file
-      // String data =
-      //     await rootBundle.loadString('assets/json_model/event_data.json');
-      // final jsonResult = jsonDecode(data);
+        // Handle null or invalid timestamps
+        if (dateA == null || dateB == null) return 0;
 
-      // final List? list = jsonResult['data'];
-      // final String? title = jsonResult['title'];
+        // First sort by year (descending order)
+        final yearA = dateA.toDate().year;
+        final yearB = dateB.toDate().year;
+        int result =
+            yearB.compareTo(yearA); // Reversed to sort by year (descending)
+
+        // If years are the same, sort by date
+        if (result == 0) {
+          result = dateA.compareTo(dateB); // Sort by date if years are the same
+        }
+
+        return result;
+      });
 
       bool hasReachedMax = false;
       String nextKey = "";
@@ -163,6 +176,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         hasReachedMax: hasReachedMax,
       );
     } catch (error) {
+      print("Eventbloc $error");
       return "Temporarily unable to load Ignite due to technical difficulties, please try again later...";
     }
   }
