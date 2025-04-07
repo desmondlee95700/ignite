@@ -43,8 +43,8 @@ class _AppBodyState extends State<AppBody> {
     0: ScrollController(),
     1: ScrollController(),
     2: ScrollController(),
+    //3: ScrollController(),
     3: ScrollController(),
-    4: ScrollController(),
   };
 
   // Variable to track the last tap time for navigation items
@@ -53,8 +53,8 @@ class _AppBodyState extends State<AppBody> {
   List<Widget> tabPages(BuildContext context) => [
         HomePage(controller: _scrollControllers[0]!),
         AnnoucementPage(controller: _scrollControllers[1]!),
-        ThemePage(controller: _scrollControllers[2]!),
-        VideoPage(controller: _scrollControllers[3]!),
+       // ThemePage(controller: _scrollControllers[2]!),
+        VideoPage(controller: _scrollControllers[2]!),
         const SettingsPage(),
       ];
 
@@ -214,11 +214,11 @@ class _AppBodyState extends State<AppBody> {
                   title: const Text('News'),
                   activeColor: Colors.white,
                   inactiveColor: Colors.grey),
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedAlbum01),
-                  title: const Text('Theme'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
+              // FlashyTabBarItem(
+              //     icon: const Icon(HugeIcons.strokeRoundedAlbum01),
+              //     title: const Text('Theme'),
+              //     activeColor: Colors.white,
+              //     inactiveColor: Colors.grey),
               FlashyTabBarItem(
                   icon: const Icon(HugeIcons.strokeRoundedPlayList),
                   title: const Text('Video'),
@@ -234,7 +234,21 @@ class _AppBodyState extends State<AppBody> {
           body: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: tabPages(context),
+            children: [
+              HomePage(
+                  key: PageStorageKey('homePage'),
+                  controller: _scrollControllers[0]!),
+              AnnoucementPage(
+                  key: PageStorageKey('announcementPage'),
+                  controller: _scrollControllers[1]!),
+              // ThemePage(
+              //     key: PageStorageKey('themePage'),
+              //     controller: _scrollControllers[2]!),
+              VideoPage(
+                  key: PageStorageKey('videoPage'),
+                  controller: _scrollControllers[2]!),
+              SettingsPage(key: PageStorageKey('settingsPage')),
+            ],
           ),
         ),
       ),

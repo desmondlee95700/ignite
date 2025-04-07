@@ -1,0 +1,72 @@
+  void addMusicVideosToFirestore() async {
+  
+    final CollectionReference musicVideosCollection =
+        FirebaseFirestore.instance.collection('announcement_news');
+
+    Map<String, dynamic> musicVideoData = {
+      "title": "Latest News",
+      "data": [
+        {
+          "id": 1,
+          "title": "Sign Up For Ignite 2024",
+          "description":
+              "Quickly SignUp for Ignite 2024 ! Grab your seat and worship the Lord together !",
+          "image":
+              "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/462233800_857729576503969_2822824101163899847_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHww9l4tqP6DZSpUVWyIdamXDWjhC9vUgZcNaOEL29SBuGZo87mi4LNVBgIo1yBJhk&_nc_ohc=JrGYW_Dry0IQ7kNvgEa3mHN&_nc_oc=AdhZ2VBliWnfwX2N_ZY3qDisEqbT9iLSAFYfeUXHfvJk7Jo05UAXQNWIGIjiD-V0Z0tAc_wjr4jIY0Wkx1BshkW7&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=AJhTG2-MLvzT41OFJXnRL_g&oh=00_AYDTidPq4T1L8r0EdX_nIjZvz2oXH-q7SiYG23ck9i6Q1A&oe=67BBD055"
+        },
+        {
+          "id": 2,
+          "title": "NEW SONG RELEASE DATE",
+          "description":
+              "Get ready for our Ignite new song !. Halleluyah Praise the Lord ! ",
+          "image":
+              "https://scontent.fkul10-1.fna.fbcdn.net/v/t39.30808-6/438275673_760263076250620_5937721792226285275_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGEqbmAm37G0q8-eFcjSh1hG1_ZxO-M9nsbX9nE74z2e_MxFG4B0Ur1w79QnMGnyIc&_nc_ohc=QlnJHAVzpOIQ7kNvgHm2tnN&_nc_oc=AdjNUqui01dfln8qHaZtl3ufXSNWwmEfyqtNcE6spsbL6y6s4YmHipO2bXvBxcg8ammxAUewvRvR80jIWI8TXjWW&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=AWXBLjXrEwOvCKTlN6QxjKk&oh=00_AYCTxrTy2DN_gB51PAoqySNVP-FKHM68KQ2pmPD2fn6dmQ&oe=67BBCB5C"
+        },
+        {
+          "id": 3,
+          "title": "About Ignite 2024",
+          "description": "About Ignite this year 2024",
+          "image":
+              "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/462362906_857729573170636_3974359653757608620_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGEvWIq8FTqVqV38nhyX6DTd8BoXm_6F8l3wGheb_oXyUqL35UDJVIuuVjH0S9pnE8&_nc_ohc=aCah9iBMGGIQ7kNvgHajbm5&_nc_oc=Adj3pTijKfGpDlvDw6zC_ulDuGkK0ywkRXpwXZku2Xe49WtK-wCi0q4dPijBhFPPe6F_hNGY6I5i7kE5fUqcmEm2&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=AUdQW-AMjRYfMt44htBsuPd&oh=00_AYDIXncQVZziDk7r9otDHzgGyYzzuKdK1Kkt-R1KxWfozg&oe=67BBBB62"
+        },
+        {
+          "id": 4,
+          "title": "Merchandise On Sale",
+          "description": "Grab yours now ! while stock last ",
+          "image":
+              "https://scontent.fkul15-1.fna.fbcdn.net/v/t51.75761-15/464250428_18277874092244301_6849311592645551605_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeETeZyNqi7X4PhgN9ZhZVcewOZRQWNFvHbA5lFBY0W8dkPswDK3IAEONeVmF9TD4uI&_nc_ohc=mRB5gmnoiIUQ7kNvgG44EzF&_nc_oc=AdhsiLsBMQoX2ote9bzkqzhqX0gV2U-lSkcc3Anc6b9VSo5Wl7lwdWsCtGQzCDisrmpecYqmiHyfvShWXFfQn7lo&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=Awzl9W5Fr1ey7yQ9633rnlZ&oh=00_AYCKanpekn5vLjcVQydtNB8ma1iNHj_mGc_0C3ssMfHuYw&oe=67BBA893"
+        },
+        {
+          "id": 4,
+          "title": "Chapel Worship on Spotify",
+          "description":
+              "Check out our Ignite Chapel Worship playlist on Spotify ❤️ Scan our Spotify code in this post!",
+          "image":
+              "https://scontent.fkul10-1.fna.fbcdn.net/v/t51.75761-15/463416435_18277212175244301_6528282503641013485_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGPncOu9eGi74jIm1lfDh8tOl9nccO3E1k6X2dxw7cTWfZdIWlTGCRek_zwd2gW4Oo&_nc_ohc=-aQzsuGK3TMQ7kNvgEZsBBO&_nc_zt=23&_nc_ht=scontent.fkul10-1.fna&_nc_gid=ALqj1uk1JCTIx6-t73oOCpQ&oh=00_AYBN1hOTpDF1-NmQ-JNUYj57UzjrS1bjAa23dd9ULW9BdQ&oe=679BA443"
+        },
+        {
+          "id": 6,
+          "title": "LIFT YOUR NAME LIVE (OUT NOW)!",
+          "description":
+              "Stay tune for our NEW SONG FEATURES ON YOUTUBE & SPOTIFY",
+          "image":
+              "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/396704634_656187843324811_5443259802334247157_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGs2bifjPNtc9ASSUn8L0Ttciz6_rCfib1yLPr-sJ-JvXvOykK1IfvpRgKbghBF__w&_nc_ohc=6UCAEYD7-_QQ7kNvgHQpc6x&_nc_oc=AdjDCr9KyudoDP0SJ_Q6QY9UKClFNLY6yzlsMOjdNRStDpe5ofyUcAfApHlqsm1eUEOE66zadCAWkSG4PAa5m0Ht&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=AUdosaNmNJEBLhneV9GdSVf&oh=00_AYAFn00987gCv64-PDZeX9VhrmoH7MuuI15RukPsHESw8w&oe=67BBA418"
+        },
+        {
+          "id": 7,
+          "title": "Ignite on Previous Year 2023!",
+          "description": "Review back the content on 2023 Ignite has provided!",
+          "image":
+              "https://scontent.fkul15-1.fna.fbcdn.net/v/t39.30808-6/368237595_618468553763407_2165024928824586056_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeE06szd4S3UEHuvTV5XDonB5WcUWIlCNTflZxRYiUI1N6g_2Esez-V-nNh8mC7dHX8&_nc_ohc=0MmIp_w4FqwQ7kNvgERbLiB&_nc_oc=Adg69pxAkO8ZIjytrSw_-Yk0xJ7qyJVN05KTyHdoblN77Uaimwe3S2a_yqkwvOQuLR1-9EkUcN-8Oj04Riuw8IDM&_nc_zt=23&_nc_ht=scontent.fkul15-1.fna&_nc_gid=AGMbX3UQxs96_lGCc2-YXm9&oh=00_AYBlrcqrk66VttxZVQUt8APort3c_x126KZNBDUKZo1S_Q&oe=67BBC70A"
+        }
+      ]
+    };
+
+    try {
+      // Add the data to Firestore
+      await musicVideosCollection.doc('announcement_news').set(musicVideoData);
+      print("Music videos added to Firestore");
+    } catch (e) {
+      print("Error adding music videos: $e");
+    }
+  }

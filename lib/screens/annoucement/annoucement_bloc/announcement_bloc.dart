@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -80,44 +81,44 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
 
   Future<dynamic> _fetchCollection() async {
     try {
-      // String url = "${apiURL}main_topic/v2";
+      final db = FirebaseFirestore.instance;
+      QuerySnapshot querySnapshot;
 
-      // final response = await http.get(Uri.parse(url));
+      querySnapshot = await db.collection("announcement_news").get();
 
-      // if (response.statusCode == 200) {
-      //   final body = json.decode(response.body);
-      //   final List? list = body['data'];
-      //   final String? title = body['title'];
+      final List list = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['data'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
 
-      //   final List<Announcement> announcements = list != null
-      //       ? list.map((dynamic announcements) {
-      //           final map = announcements as Map<String, dynamic>;
-      //           return Announcement.fromJson(map);
-      //         }).toList()
-      //       : [];
+      final String title = querySnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['title'] as String?; // Extract the title field
+          })
+          .where((title) => title != null) // Filter out any null titles
+          .join(', ');
 
-      //   return AnnnouncementAPIDetails(
-      //     announcements: announcements,
-      //     title: title,
-      //   );
-      // } else {
-      //   return "Temporarily unable to load Sinar Daily, please try again later...";
-      // }
+      final announcements = list.map((dynamic articles) {
+        final map = articles as Map<String, dynamic>;
+        return Announcement.fromJson(map);
+      }).toList();
 
-      // Load the chosen JSON file
-      String data = await rootBundle
-          .loadString('assets/json_model/announcement_data.json');
-      final jsonResult = jsonDecode(data);
+      announcements.sort((a, b) {
+        final dateA = a.post_date;
+        final dateB = b.post_date;
 
-      final List? list = jsonResult['data'];
-      final String? title = jsonResult['title'];
+        if (dateA == null || dateB == null) return 0;
 
-      final List<Announcement> announcements = list != null
-          ? list.map((dynamic announcements) {
-              final map = announcements as Map<String, dynamic>;
-              return Announcement.fromJson(map);
-            }).toList()
-          : [];
+        final dateTimeA = dateA.toDate();
+        final dateTimeB = dateB.toDate();
+
+        // Sort by most recent first (descending)
+        return dateTimeB.compareTo(dateTimeA);
+      });
 
       bool hasReachedMax = false;
       String nextKey = "";

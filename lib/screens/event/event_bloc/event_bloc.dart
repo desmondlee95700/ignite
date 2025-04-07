@@ -78,41 +78,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     }
   }
 
-  // void addMusicVideosToFirestore() async {
-  //   // Reference to the Firestore collection where you want to store the data
-  //   final CollectionReference musicVideosCollection =
-  //       FirebaseFirestore.instance.collection('event_news');
-
-  //   // The data to add
-  //   Map<String, dynamic> musicVideoData = {
-  //     "title": "Latest Events",
-  //     "data": [
-  //       {
-  //         "id": 1,
-  //         "post_date": "2024-10-26",
-  //         "time": "9.00 PM",
-  //         "title": "CHAPEL WORSHIP",
-  //         "image": "https://i.imghippo.com/files/iBu3780kF.jpg"
-  //       },
-  //       {
-  //         "id": 2,
-  //         "time": "4.30PM",
-  //         "post_date": "2023-08-26",
-  //         "title": "KINGDOM",
-  //         "image": "https://i.imghippo.com/files/HWq4972dw.jpg"
-  //       }
-  //     ]
-  //   };
-
-  //   try {
-  //     // Add the data to Firestore
-  //     await musicVideosCollection.doc('event_news_posts').set(musicVideoData);
-  //     print("Music videos added to Firestore");
-  //   } catch (e) {
-  //     print("Error adding music videos: $e");
-  //   }
-  // }
-
   Future<dynamic> _fetchCollection() async {
     try {
       final db = FirebaseFirestore.instance;
