@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 class BackgroundWave extends StatelessWidget {
   final double height;
 
-  const BackgroundWave(
-      {super.key, required this.height});
+  const BackgroundWave({super.key, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +23,32 @@ class BackgroundWave extends StatelessWidget {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: height,
-                  child: Image.asset(
-                    "assets/images/ignite_icon.jpg",
-                    fit: BoxFit.cover,
+                  // child: Image.asset(
+                  //   "assets/images/ignite_icon.jpg",
+                  //   fit: BoxFit.cover,
+                  // ),
+                  child: CachedNetworkImage(
+                    imageUrl: "https://i.imghippo.com/files/kFty9748px.jpg",
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    placeholder: (context, url) {
+                      return Image.asset(
+                        "assets/images/ignite_icon.jpg",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Image.asset(
+                        "assets/images/ignite_icon.jpg",
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ),

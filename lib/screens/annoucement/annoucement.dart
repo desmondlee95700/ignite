@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/screens/annoucement/annoucement_bloc/announcement_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/screens/annoucement/annoucement_grid/announcement_grid.dart';
-import 'package:ignite/screens/event/calendar_page.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 

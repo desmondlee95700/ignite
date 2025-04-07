@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/screens/annoucement/peek_view/peekview_manager.dart';
+import 'package:ignite/screens/webview/webview.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ExploreGridItem extends StatelessWidget {
   final Announcement announcement;
@@ -16,7 +18,20 @@ class ExploreGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            duration: const Duration(milliseconds: 300),
+            reverseDuration: const Duration(milliseconds: 300),
+            isIos: true,
+            child: WebViewPage(
+              url: announcement.url.toString(),
+            ),
+          ),
+        );
+      },
       onLongPress: () {
         HapticFeedback.vibrate();
         final peekViewManager = PeekViewManager(announcement: announcement);
