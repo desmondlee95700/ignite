@@ -158,11 +158,7 @@ class _EventDetailsPage extends State<EventDetailsPage>
                                     SizedBox(
                                         width: getProportionateScreenWidth(10)),
                                     TypeWriter.text(
-                                      "Ignite ${getYearFromDateString(DateFormat('yyyy-MM-dd').format(
-                                        widget.events.start_post_date!
-                                            .toDate()
-                                            .toLocal(),
-                                      )).toString()}",
+                                      "Ignite ${getYearFromDateString(DateFormat('yyyy-MM-dd').format(widget.events.start_post_date!)).toString()}",
                                       maintainSize: false,
                                       style: const TextStyle(
                                           overflow: TextOverflow.ellipsis,

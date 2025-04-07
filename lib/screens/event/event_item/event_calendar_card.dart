@@ -18,13 +18,13 @@ class EventCalendarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _getEventTimeBasedOnSelectedDate(
-        Timestamp? startDate, Timestamp? endDate, DateTime? selectedDay) {
+        DateTime? startDate, DateTime? endDate, DateTime? selectedDay) {
       if (startDate == null || selectedDay == null)
         return "No start date available";
 
       // Convert both start and end timestamps to DateTime objects
-      DateTime startDateTime = startDate.toDate().toLocal();
-      DateTime? endDateTime = endDate?.toDate().toLocal();
+      DateTime startDateTime = startDate;
+      DateTime? endDateTime = endDate;
 
       // Normalize the selected date to just the year, month, and day (ignoring time)
       DateTime normalizedSelectedDate =
@@ -91,7 +91,7 @@ class EventCalendarCard extends StatelessWidget {
                 children: [
                   Text(
                       "Ignite ${getYearFromDateString(DateFormat('yyyy-MM-dd').format(
-                        events.start_post_date!.toDate().toLocal(),
+                        events.start_post_date!,
                       )).toString()}",
                       style: const TextStyle(
                           color: Colors.red,

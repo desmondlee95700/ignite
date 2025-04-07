@@ -11,14 +11,14 @@ final class Announcement {
   String? title;
   String? description;
   String? image;
-  Timestamp? post_date;
+  DateTime? post_date; // Change to DateTime
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
     return Announcement(
       title: json["title"],
       description: json["description"],
       image: json["image"],
-      post_date: json["post_date"]
+      post_date: (json["post_date"] as Timestamp?)?.toDate(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -26,7 +26,7 @@ final class Announcement {
       "title": title,
       "description": description,
       "image": image,
-      "post_date" : post_date
+      "post_date": post_date
     };
     return data;
   }

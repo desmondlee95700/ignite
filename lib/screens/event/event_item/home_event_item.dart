@@ -139,7 +139,7 @@ class HomeEventItem extends StatelessWidget {
                       children: [
                         Text(
                           getMonthShort(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!.toDate().toLocal(),
+                            events.start_post_date!,
                           )), // Month abbreviation
                           style: const TextStyle(
                             fontSize: 10,
@@ -149,9 +149,9 @@ class HomeEventItem extends StatelessWidget {
                         ),
                         Text(
                           "${getDay(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!.toDate().toLocal(),
+                            events.start_post_date!,
                           ))} - ${getDay(DateFormat('yyyy-MM-dd').format(
-                            events.end_post_date!.toDate().toLocal(),
+                            events.end_post_date!,
                           ))}",
                           style: const TextStyle(
                             fontSize: 18,
@@ -162,7 +162,7 @@ class HomeEventItem extends StatelessWidget {
                         ),
                         Text(
                           getYearFromDateString(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!.toDate().toLocal(),
+                            events.start_post_date!,
                           )).toString(), // Month abbreviation
                           style: const TextStyle(
                             fontSize: 10,
@@ -197,7 +197,7 @@ class HomeEventItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                getTimeFromTimestamp(events.start_post_date!).toString(),
+                getTimeFromDateTime(events.start_post_date!).toString(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

@@ -59,3 +59,16 @@ String getTimeFromTimestamp(Timestamp timestamp) {
 
   return DateFormat('h:mm a').format(dateTime);  // Example: "7:30 PM"
 }
+
+String getTimeFromDateTime(DateTime dateTime) {
+  // Ensure the time is in local time (MYT)
+  final localDateTime = dateTime.toLocal();
+
+  // Check if the time is exactly 12:00 AM
+  if (localDateTime.hour == 0 && localDateTime.minute == 0) {
+    return 'To be announced';
+  }
+
+  // Format the time to "h:mm a" (e.g., "7:30 PM")
+  return DateFormat('h:mm a').format(localDateTime);
+}

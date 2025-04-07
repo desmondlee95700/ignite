@@ -116,8 +116,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         if (dateA == null || dateB == null) return 0;
 
         // First sort by year (descending order)
-        final yearA = dateA.toDate().year;
-        final yearB = dateB.toDate().year;
+        final yearA = dateA.year;
+        final yearB = dateB.year;
         int result =
             yearB.compareTo(yearA); // Reversed to sort by year (descending)
 

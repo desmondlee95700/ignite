@@ -1,10 +1,8 @@
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Announcement.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -79,6 +77,7 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
     }
   }
 
+
   Future<dynamic> _fetchCollection() async {
     try {
       final db = FirebaseFirestore.instance;
@@ -113,8 +112,11 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
 
         if (dateA == null || dateB == null) return 0;
 
-        final dateTimeA = dateA.toDate();
-        final dateTimeB = dateB.toDate();
+        //final dateTimeA = dateA.toDate();
+        //final dateTimeB = dateB.toDate();
+
+        final dateTimeA = dateA;
+        final dateTimeB = dateB;
 
         // Sort by most recent first (descending)
         return dateTimeB.compareTo(dateTimeA);

@@ -276,8 +276,8 @@ class _CalendarPageState extends State<CalendarPage> {
     for (var event in events) {
       try {
         // Normalize the start and end dates to remove the time part
-        final startDate = event.start_post_date!.toDate().toLocal();
-        final endDate = event.end_post_date?.toDate().toLocal() ??
+        final startDate = event.start_post_date!;
+        final endDate = event.end_post_date??
             startDate; // Use start date if end date is null
 
         // Normalize both start and end dates
