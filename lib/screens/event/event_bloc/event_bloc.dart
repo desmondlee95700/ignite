@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Event.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'event_event.dart';
@@ -80,10 +81,38 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
   Future<dynamic> _fetchCollection() async {
     try {
-      final db = FirebaseFirestore.instance;
-      QuerySnapshot querySnapshot;
+      final prefs = await SharedPreferences.getInstance();
 
-      querySnapshot = await db.collection("event_news").get();
+      // Check if cached events exist in SharedPreferences
+      final cachedData = prefs.getStringList('saved_events');
+      final cachedTitle = prefs.getString('saved_events_title');
+
+      if (cachedData != null && cachedTitle != null) {
+        print("Firebase event cache");
+        final events = cachedData.map((jsonStr) {
+          final Map<String, dynamic> map = jsonDecode(jsonStr);
+          return Event.fromJson(map);
+        }).toList();
+
+        // Sort events by most recent start_post_date
+        events.sort((a, b) {
+          final dateA = a.start_post_date;
+          final dateB = b.start_post_date;
+          if (dateA == null || dateB == null) return 0;
+          return dateB.compareTo(dateA);
+        });
+
+        return EventAPIDetails(
+          events: events,
+          title: cachedTitle,
+          hasReachedMax: true,
+        );
+      }
+
+      // --- If no cache exists, fetch from Firestore ---
+      print("Firebase event no cache");
+      final db = FirebaseFirestore.instance;
+      final querySnapshot = await db.collection("event_news").get();
 
       final List list = querySnapshot.docs
           .map((doc) {
@@ -96,53 +125,47 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       final String title = querySnapshot.docs
           .map((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            return data['title'] as String?; // Extract the title field
+            return data['title'] as String?;
           })
-          .where((title) => title != null) // Filter out any null titles
+          .where((t) => t != null)
           .join(', ');
 
-      final events = list.map((dynamic articles) {
-        final map = articles as Map<String, dynamic>;
+      final events = list.map((dynamic article) {
+        final map = article as Map<String, dynamic>;
         return Event.fromJson(map);
       }).toList();
 
       // Sort events by year (descending order) and then by start_post_date
       events.sort((a, b) {
-        final dateA =
-            a.start_post_date; // Assuming start_post_date is a Timestamp
+        final dateA = a.start_post_date;
         final dateB = b.start_post_date;
 
-        // Handle null or invalid timestamps
         if (dateA == null || dateB == null) return 0;
 
-        // First sort by year (descending order)
         final yearA = dateA.year;
         final yearB = dateB.year;
-        int result =
-            yearB.compareTo(yearA); // Reversed to sort by year (descending)
+        int result = yearB.compareTo(yearA); // Reversed for descending order
 
         // If years are the same, sort by date
         if (result == 0) {
-          result = dateA.compareTo(dateB); // Sort by date if years are the same
+          result = dateA.compareTo(dateB);
         }
-
         return result;
       });
 
-      bool hasReachedMax = false;
-      String nextKey = "";
-      if (nextKey.isEmpty || events.isEmpty) {
-        hasReachedMax = true;
-      }
+      // Cache the results in SharedPreferences
+      final jsonList = events.map((e) => jsonEncode(e.toJson())).toList();
+      await prefs.setStringList('saved_events', jsonList);
+      await prefs.setString('saved_events_title', title);
 
       return EventAPIDetails(
         events: events,
         title: title,
-        hasReachedMax: hasReachedMax,
+        hasReachedMax: true,
       );
     } catch (error) {
-      print("Eventbloc $error");
-      return "Temporarily unable to load Ignite due to technical difficulties, please try again later...";
+      print("EventBloc error: $error");
+      return "Temporarily unable to load events, please try again later...";
     }
   }
 }

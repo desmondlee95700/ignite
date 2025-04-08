@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -5,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Announcement.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'announcement_event.dart';
@@ -77,13 +79,39 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
     }
   }
 
-
   Future<dynamic> _fetchCollection() async {
     try {
-      final db = FirebaseFirestore.instance;
-      QuerySnapshot querySnapshot;
+      final prefs = await SharedPreferences.getInstance();
 
-      querySnapshot = await db.collection("announcement_news").get();
+      final cachedData = prefs.getStringList('saved_announcements');
+      final cachedTitle = prefs.getString('saved_announcements_title');
+
+      if (cachedData != null && cachedTitle != null) {
+        print("Firebase announcment cache");
+        final announcements = cachedData.map((jsonStr) {
+          final Map<String, dynamic> map = jsonDecode(jsonStr);
+          return Announcement.fromJson(map);
+        }).toList();
+
+        // Sort by most recent post date
+        announcements.sort((a, b) {
+          final dateA = a.post_date;
+          final dateB = b.post_date;
+          if (dateA == null || dateB == null) return 0;
+          return dateB.compareTo(dateA);
+        });
+
+        return AnnnouncementAPIDetails(
+          announcements: announcements,
+          title: cachedTitle,
+          hasReachedMax: true,
+        );
+      }
+
+      // --- If no cache exists, fetch from Firestore ---
+      print("Firebase announcment no cache");
+      final db = FirebaseFirestore.instance;
+      final querySnapshot = await db.collection("announcement_news").get();
 
       final List list = querySnapshot.docs
           .map((doc) {
@@ -96,44 +124,37 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
       final String title = querySnapshot.docs
           .map((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            return data['title'] as String?; // Extract the title field
+            return data['title'] as String?;
           })
-          .where((title) => title != null) // Filter out any null titles
+          .where((t) => t != null)
           .join(', ');
 
-      final announcements = list.map((dynamic articles) {
-        final map = articles as Map<String, dynamic>;
+      final announcements = list.map((dynamic article) {
+        final map = article as Map<String, dynamic>;
         return Announcement.fromJson(map);
       }).toList();
 
+      // Sort announcements by most recent post date
       announcements.sort((a, b) {
         final dateA = a.post_date;
         final dateB = b.post_date;
-
         if (dateA == null || dateB == null) return 0;
-
-        //final dateTimeA = dateA.toDate();
-        //final dateTimeB = dateB.toDate();
-
-        final dateTimeA = dateA;
-        final dateTimeB = dateB;
-
-        // Sort by most recent first (descending)
-        return dateTimeB.compareTo(dateTimeA);
+        return dateB.compareTo(dateA);
       });
 
-      bool hasReachedMax = false;
-      String nextKey = "";
-      if (nextKey.isEmpty || announcements.isEmpty) {
-        hasReachedMax = true;
-      }
+      // Cache to SharedPreferences
+      final jsonList =
+          announcements.map((a) => jsonEncode(a.toJson())).toList();
+      await prefs.setStringList('saved_announcements', jsonList);
+      await prefs.setString('saved_announcements_title', title);
 
       return AnnnouncementAPIDetails(
         announcements: announcements,
         title: title,
-        hasReachedMax: hasReachedMax,
+        hasReachedMax: true,
       );
     } catch (error) {
+      print("Failed to load announcements: $error");
       return "Temporarily unable to load Ignite due to technical difficulties, please try again later...";
     }
   }
