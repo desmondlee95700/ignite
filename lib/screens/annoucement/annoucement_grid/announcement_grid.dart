@@ -19,18 +19,20 @@ class ExploreGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.rightToLeft,
-            duration: const Duration(milliseconds: 300),
-            reverseDuration: const Duration(milliseconds: 300),
-            isIos: true,
-            child: WebViewPage(
-              url: announcement.url.toString(),
-            ),
-          ),
-        );
+        announcement.type == "video_link"
+            ? Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  duration: const Duration(milliseconds: 300),
+                  reverseDuration: const Duration(milliseconds: 300),
+                  isIos: true,
+                  child: WebViewPage(
+                    url: announcement.url.toString(),
+                  ),
+                ),
+              )
+            : null;
       },
       onLongPress: () {
         HapticFeedback.vibrate();

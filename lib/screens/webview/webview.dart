@@ -28,6 +28,15 @@ class _WebViewPageState extends State<WebViewPage> {
           onPageFinished: (_) {
             setState(() => _isLoading = false);
           },
+          onNavigationRequest: (NavigationRequest request) {
+            debugPrint('allowing navigation to ${request.url}');
+
+            if (request.url.contains('applink.instagram.com') ||
+                request.url.contains("instagram.com/accounts/signup/phone")) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
         ),
       )
       ..loadRequest(Uri.parse(widget.url));
@@ -45,7 +54,10 @@ class _WebViewPageState extends State<WebViewPage> {
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedArrowLeft02, color: Colors.white,),
+          icon: const Icon(
+            HugeIcons.strokeRoundedArrowLeft02,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },

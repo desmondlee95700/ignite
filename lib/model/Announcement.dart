@@ -6,6 +6,7 @@ final class Announcement {
     required this.description,
     required this.image,
     required this.url,
+    required this.type,
     required this.post_date,
   });
 
@@ -13,6 +14,7 @@ final class Announcement {
   String? description;
   String? image;
   String? url;
+  String? type;
   DateTime? post_date; // Change to DateTime
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ final class Announcement {
       description: json["description"],
       image: json["image"],
       url: json["url"],
+      type: json["type"],
       post_date: postDate,
     );
   }
@@ -40,6 +43,7 @@ final class Announcement {
       "description": description,
       "image": image,
       "url": url,
+      "type" : type,
       "post_date": post_date?.toIso8601String()
     };
     return data;

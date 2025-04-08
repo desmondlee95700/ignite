@@ -101,7 +101,7 @@ class AnnouncementPeekView extends StatelessWidget {
               ],
             ),
             Container(
-              // height: 80,
+              //height: 80,
               decoration: const BoxDecoration(
                 color: darkThemeColor,
                 borderRadius: const BorderRadius.only(
@@ -114,7 +114,7 @@ class AnnouncementPeekView extends StatelessWidget {
                 child: Center(
                   child: Text(
                     announcement.description!,
-                    maxLines: 2,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: const TextStyle(
