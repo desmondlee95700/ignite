@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/empty_state.dart';
+import 'package:ignite/functions/size_config.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_bloc/event_bloc.dart';
 import 'package:ignite/screens/event/event_item/home_event_item.dart';
@@ -112,17 +114,71 @@ class _HomeEventSectionState extends State<HomeEventSection> {
             );
           case EventStatus.success:
             List<Event> events = state.events;
-            final limitedAnnouncements = events.take(3).toList();
+
+            final ongoingEvents = events
+                .where(
+                    (event) => event.start_post_date!.isAfter(DateTime.now()))
+                .toList();
+            final endedEvents = events
+                .where(
+                    (event) => event.start_post_date!.isBefore(DateTime.now()))
+                .toList();
+
+            final limitedOngoingEvents = ongoingEvents.take(3).toList();
 
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: limitedAnnouncements
-                    .map(
-                      (events) =>
-                          HomeEventItem(events: events),
-                    )
-                    .toList(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // Handle "View More Passed Event" click
+                    },
+                    child: const Text(
+                      'On Going Event',
+                      style:
+                          TextStyle(color: Colors.white, fontFamily: 'Manrope'),
+                    ),
+                  ),
+                  Row(
+                    children: limitedOngoingEvents
+                        .map(
+                          (event) => HomeEventItem(events: event),
+                        )
+                        .toList(),
+                  ),
+                  if (endedEvents.isNotEmpty) ...[
+                    SizedBox(height: getProportionateScreenHeight(10)),
+                    TextButton(
+                      onPressed: () {
+                        // Handle "View More Passed Event" click
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'View More Passed Event',
+                            style: TextStyle(
+                                color: Colors.white, fontFamily: 'Manrope'),
+                          ),
+                          SizedBox(width: getProportionateScreenWidth(5)),
+                          const Icon(
+                            HugeIcons.strokeRoundedArrowRight01,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: endedEvents
+                          .map(
+                            (event) => HomeEventItem(events: event),
+                          )
+                          .toList(),
+                    ),
+                  ]
+                ],
               ),
             );
         }

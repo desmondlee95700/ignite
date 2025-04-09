@@ -55,22 +55,6 @@ class _AnnoucementPageState extends State<AnnoucementPage> {
                     fontSize: 18,
                   ),
                 ),
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       PageTransition(
-                //         type: PageTransitionType.rightToLeft,
-                //         duration: const Duration(milliseconds: 600),
-                //         reverseDuration: const Duration(milliseconds: 600),
-                //         isIos: true,
-                //         child: CalendarPage(),
-                //       ),
-                //     );
-                //   },
-                //   child: const Icon(HugeIcons.strokeRoundedCalendar01,
-                //       color: Colors.white),
-                // ),
               ],
             ),
           ),

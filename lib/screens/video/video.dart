@@ -62,22 +62,6 @@ class _VideoPageState extends State<VideoPage> {
                     fontSize: 18,
                   ),
                 ),
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       PageTransition(
-                //         type: PageTransitionType.rightToLeft,
-                //         duration: const Duration(milliseconds: 600),
-                //         reverseDuration: const Duration(milliseconds: 600),
-                //         isIos: true,
-                //         child: const CalendarPage(),
-                //       ),
-                //     );
-                //   },
-                //   child: const Icon(HugeIcons.strokeRoundedCalendar01,
-                //       color: Colors.white),
-                // ),
               ],
             ),
           ),
@@ -133,53 +117,59 @@ class _VideoPageState extends State<VideoPage> {
             },
             child: Card(
               margin: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      // Image background
-                      CachedNetworkImage(
-                        imageUrl: album.thumbnail!,
-                        height: 200.0,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) {
-                          return Container(
-                            color: Colors.grey,
-                            height: 200.0,
-                            width: double.infinity,
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return Container(
-                            color: Colors.grey,
-                            height: 200.0,
-                            width: double.infinity,
-                            child: const Icon(
-                              Icons.error,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        // Image background
+                        CachedNetworkImage(
+                          imageUrl: album.thumbnail!,
+                          height: 200.0,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) {
+                            return Container(
+                              color: Colors.grey,
+                              height: 200.0,
+                              width: double.infinity,
+                            );
+                          },
+                          errorWidget: (context, url, error) {
+                            return Container(
+                              color: Colors.grey,
+                              height: 200.0,
+                              width: double.infinity,
+                              child: const Icon(
+                                Icons.error,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        ),
+                        // Title overlay
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            album.post_title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
                               color: Colors.white,
+                              fontFamily: 'Manrope',
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
-                      ),
-                      // Title overlay
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          album.post_title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Manrope',
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );

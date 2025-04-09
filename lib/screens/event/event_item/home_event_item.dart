@@ -126,7 +126,8 @@ class HomeEventItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.rectangle,
-                      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
@@ -197,7 +198,9 @@ class HomeEventItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                getTimeFromDateTime(events.start_post_date!).toString(),
+                DateTime.now().isAfter(events.start_post_date!)
+                    ? "ENDED"
+                    : getTimeFromDateTime(events.start_post_date!).toString(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

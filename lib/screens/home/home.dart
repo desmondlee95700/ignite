@@ -107,64 +107,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 top: MediaQuery.of(context).viewPadding.top,
                 left: 10,
                 right: 10,
+                bottom: kBottomNavigationBarHeight,
               ),
               child: CustomScrollView(
-                physics: const ClampingScrollPhysics(),
                 slivers: [
-                  // Fade In Effect
-                  SliverToBoxAdapter(
-                    child: AnimatedOpacity(
-                      opacity: 1.0,
-                      duration: const Duration(milliseconds: 600),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 5),
-                        child:
-                            BlocBuilder<AnnouncementBloc, AnnouncementState>(
-                          builder: (context, state) {
-                            String? title = state.title;
-                            return Row(
-                              children: [
-                                Text(
-                                  title ?? "Hot Stuff",
-                                  style: const TextStyle(
-                                    fontFamily: 'Manrope',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(
-                                    width: getProportionateScreenWidth(10)),
-                                const Icon(
-                                  HugeIcons.strokeRoundedMegaphone02,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  SliverToBoxAdapter(
-                      child: SizedBox(height: getProportionateScreenHeight(5))),
-
-                  // Slide In Animation
-                  SliverToBoxAdapter(
-                    child: SlideTransition(
-                      position: slideAnimation,
-                      child: HomeAnnoucementSection(
-                        announcementBloc: announcementBloc,
-                      ),
-                    ),
-                  ),
-
-                  SliverToBoxAdapter(
-                      child: SizedBox(height: getProportionateScreenHeight(20))),
-
-                  // Scale Effect
                   SliverToBoxAdapter(
                     child: ScaleTransition(
                       scale: scaleAnimation,
@@ -186,11 +132,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 SizedBox(
                                     width: getProportionateScreenWidth(10)),
-                                const Icon(
-                                  HugeIcons.strokeRoundedCalendar02,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
+                                Image.asset('assets/gif/trending_news_gif.gif',
+                                    height: getProportionateScreenHeight(30),
+                                    width: getProportionateScreenWidth(30)),
                               ],
                             );
                           },
@@ -211,6 +155,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+
+                  SliverToBoxAdapter(
+                      child:
+                          SizedBox(height: getProportionateScreenHeight(20))),
+
+                  SliverToBoxAdapter(
+                    child: AnimatedOpacity(
+                      opacity: 1.0,
+                      duration: const Duration(milliseconds: 600),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child: BlocBuilder<AnnouncementBloc, AnnouncementState>(
+                          builder: (context, state) {
+                            String? title = state.title;
+                            return Row(
+                              children: [
+                                Text(
+                                  title ?? "Hot Stuff",
+                                  style: const TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(width: getProportionateScreenWidth(5)),
+                                Image.asset('assets/gif/megaphone_gif.gif',
+                                    height: getProportionateScreenHeight(30),
+                                    width: getProportionateScreenWidth(30)),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(
+                      child: SizedBox(height: getProportionateScreenHeight(5))),
+
+                  // Slide In Animation
+                  SliverToBoxAdapter(
+                    child: SlideTransition(
+                      position: slideAnimation,
+                      child: HomeAnnoucementSection(
+                        announcementBloc: announcementBloc,
+                      ),
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(
+                      child:
+                          SizedBox(height: getProportionateScreenHeight(20))),
                 ],
               ),
             ),
