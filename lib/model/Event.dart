@@ -18,7 +18,7 @@ final class Event {
   factory Event.fromJson(Map<String, dynamic> json) {
     final startPostDateRaw = json['start_post_date'];
     DateTime? startPostDate;
-    final endPostDateRaw = json['start_post_date'];
+    final endPostDateRaw = json['end_post_date'];
     DateTime? endPostDate;
 
     if (startPostDateRaw is Timestamp) {

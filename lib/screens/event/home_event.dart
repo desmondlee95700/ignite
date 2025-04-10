@@ -114,51 +114,81 @@ class _HomeEventSectionState extends State<HomeEventSection> {
             );
           case EventStatus.success:
             List<Event> events = state.events;
+            final now = DateTime.now();
 
-            final ongoingEvents = events
-                .where(
-                    (event) => event.start_post_date!.isAfter(DateTime.now()))
-                .toList();
-            final endedEvents = events
-                .where(
-                    (event) => event.start_post_date!.isBefore(DateTime.now()))
-                .toList();
+            final ongoingEvents = events.where((event) {
+              final start = event.start_post_date;
+              final end = event.end_post_date;
+              return start != null &&
+                  end != null &&
+                  start.isBefore(now) &&
+                  end.isAfter(now);
+            }).toList();
+
+            final upcomingEvents = events.where((event) {
+              final start = event.start_post_date;
+              return start != null && start.isAfter(now);
+            }).toList();
+
+            final endedEvents = events.where((event) {
+              final end = event.end_post_date;
+              return end != null && end.isBefore(now);
+            }).toList();
 
             final limitedOngoingEvents = ongoingEvents.take(3).toList();
+            final limitedUpcomingEvents = upcomingEvents.take(3).toList();
 
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      // Handle "View More Passed Event" click
-                    },
-                    child: const Text(
-                      'On Going Event',
-                      style:
-                          TextStyle(color: Colors.white, fontFamily: 'Manrope'),
+                  if (limitedOngoingEvents.isNotEmpty) ...[
+                    TextButton(
+                      onPressed: () {
+                        // Handle "View More Ongoing Events"
+                      },
+                      child: const Text(
+                        'Ongoing Events',
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: 'Manrope'),
+                      ),
                     ),
-                  ),
-                  Row(
-                    children: limitedOngoingEvents
-                        .map(
-                          (event) => HomeEventItem(events: event),
-                        )
-                        .toList(),
-                  ),
+                    Row(
+                      children: limitedOngoingEvents
+                          .map((event) => HomeEventItem(events: event))
+                          .toList(),
+                    ),
+                  ],
+                  if (limitedUpcomingEvents.isNotEmpty) ...[
+                    SizedBox(height: getProportionateScreenHeight(10)),
+                    TextButton(
+                      onPressed: () {
+                        // Handle "View More Upcoming Events"
+                      },
+                      child: const Text(
+                        'Upcoming Events',
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: 'Manrope'),
+                      ),
+                    ),
+                    Row(
+                      children: limitedUpcomingEvents
+                          .map((event) => HomeEventItem(events: event))
+                          .toList(),
+                    ),
+                  ],
                   if (endedEvents.isNotEmpty) ...[
                     SizedBox(height: getProportionateScreenHeight(10)),
                     TextButton(
                       onPressed: () {
-                        // Handle "View More Passed Event" click
+                        // Handle "View More Ended Events"
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            'View More Passed Event',
+                            'View More Ended Events',
                             style: TextStyle(
                                 color: Colors.white, fontFamily: 'Manrope'),
                           ),
@@ -172,12 +202,10 @@ class _HomeEventSectionState extends State<HomeEventSection> {
                     ),
                     Row(
                       children: endedEvents
-                          .map(
-                            (event) => HomeEventItem(events: event),
-                          )
+                          .map((event) => HomeEventItem(events: event))
                           .toList(),
                     ),
-                  ]
+                  ],
                 ],
               ),
             );

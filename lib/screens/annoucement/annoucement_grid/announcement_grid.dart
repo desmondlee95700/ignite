@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/screens/annoucement/peek_view/peekview_manager.dart';
+import 'package:ignite/screens/video/video_item/video_single.dart';
 import 'package:ignite/screens/webview/webview.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -32,7 +33,23 @@ class ExploreGridItem extends StatelessWidget {
                   ),
                 ),
               )
-            : null;
+            : announcement.type == "youtube"
+                ? Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      duration: const Duration(milliseconds: 300),
+                      reverseDuration: const Duration(milliseconds: 300),
+                      isIos: true,
+                      child: VideoSinglePage(
+                        videoURL: announcement.url.toString(),
+                        title: announcement.title.toString(),
+                        date: announcement.post_date!,
+                        thumbnail: announcement.image.toString(),
+                      ),
+                    ),
+                  )
+                : null;
       },
       onLongPress: () {
         HapticFeedback.vibrate();
