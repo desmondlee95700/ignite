@@ -11,9 +11,9 @@ import 'package:ignite/functions/exit_app.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:ignite/screens/annoucement/annoucement.dart';
 import 'package:ignite/screens/home/home.dart';
+import 'package:ignite/screens/lyrics/lyrics_page.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/screens/settings/settings.dart';
-import 'package:ignite/screens/theme/theme.dart';
 import 'package:ignite/screens/video/video.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -43,7 +43,6 @@ class _AppBodyState extends State<AppBody> {
     0: ScrollController(),
     1: ScrollController(),
     2: ScrollController(),
-    //3: ScrollController(),
     3: ScrollController(),
   };
 
@@ -53,7 +52,7 @@ class _AppBodyState extends State<AppBody> {
   List<Widget> tabPages(BuildContext context) => [
         HomePage(controller: _scrollControllers[0]!),
         AnnoucementPage(controller: _scrollControllers[1]!),
-       // ThemePage(controller: _scrollControllers[2]!),
+        LyricsPage(controller: _scrollControllers[2]!),
         VideoPage(controller: _scrollControllers[2]!),
         const SettingsPage(),
       ];
@@ -96,7 +95,7 @@ class _AppBodyState extends State<AppBody> {
     }
 
     PictureInPicture.updatePiPParams(
-      pipParams: PiPParams(
+      pipParams: const PiPParams(
         pipWindowHeight: 120,
         pipWindowWidth: 250,
         bottomSpace: 64,
@@ -214,11 +213,11 @@ class _AppBodyState extends State<AppBody> {
                   title: const Text('News'),
                   activeColor: Colors.white,
                   inactiveColor: Colors.grey),
-              // FlashyTabBarItem(
-              //     icon: const Icon(HugeIcons.strokeRoundedAlbum01),
-              //     title: const Text('Theme'),
-              //     activeColor: Colors.white,
-              //     inactiveColor: Colors.grey),
+              FlashyTabBarItem(
+                  icon: const Icon(HugeIcons.strokeRoundedFileMusic),
+                  title: const Text('Lyrics'),
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.grey),
               FlashyTabBarItem(
                   icon: const Icon(HugeIcons.strokeRoundedPlayList),
                   title: const Text('Video'),
@@ -241,12 +240,12 @@ class _AppBodyState extends State<AppBody> {
               AnnoucementPage(
                   key: PageStorageKey('announcementPage'),
                   controller: _scrollControllers[1]!),
-              // ThemePage(
-              //     key: PageStorageKey('themePage'),
-              //     controller: _scrollControllers[2]!),
+              LyricsPage(
+                  key: PageStorageKey('lyricsPage'),
+                  controller: _scrollControllers[2]!),
               VideoPage(
                   key: PageStorageKey('videoPage'),
-                  controller: _scrollControllers[2]!),
+                  controller: _scrollControllers[3]!),
               SettingsPage(key: PageStorageKey('settingsPage')),
             ],
           ),

@@ -9,6 +9,7 @@ import 'package:flutter_in_app_pip/pip_material_app.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/screens/appdata_bloc/appdata_bloc.dart';
+import 'package:ignite/screens/lyrics/thumbnail_cubit_bloc/generate_thumbnail_cubit.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/splash_screen.dart';
 
@@ -22,7 +23,8 @@ Future<void> main() async {
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(create: (_) => PipBloc()),
-      BlocProvider(create: (_) => AppDataBloc())
+      BlocProvider(create: (_) => AppDataBloc()),
+      BlocProvider(create: (_) => PdfThumbnailsCubit()),
     ],
     child: const MyApp(),
   ));

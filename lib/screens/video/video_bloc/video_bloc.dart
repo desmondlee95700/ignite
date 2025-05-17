@@ -112,7 +112,6 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
             .startAfterDocument(lastDocument) 
             .get();
       } else {
-  
         querySnapshot = await db.collection(collectionName).get();
       }
 

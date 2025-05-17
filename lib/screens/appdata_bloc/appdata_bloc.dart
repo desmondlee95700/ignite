@@ -4,8 +4,10 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/model/Event.dart';
+import 'package:ignite/model/Lyrics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -69,6 +71,7 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
       final db = FirebaseFirestore.instance;
       QuerySnapshot announcementSnapshot;
       QuerySnapshot eventSnapshot;
+      QuerySnapshot lyricsSnapshot;
 
       // --- Annoucement ---
       announcementSnapshot = await db.collection("announcement_news").get();
@@ -130,6 +133,8 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
         return Event.fromJson(map);
       }).toList();
 
+      debugPrint("Firebase is event $events");
+
       events.sort((a, b) {
         final dateA = a.start_post_date;
         final dateB = b.start_post_date;
@@ -143,16 +148,34 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
         return result;
       });
 
-      final List<String> eventJsonList = events
-          .map((event) => jsonEncode(event.toJson()))
-          .toList();
+      final List<String> eventJsonList =
+          events.map((event) => jsonEncode(event.toJson())).toList();
       await prefs.setStringList('saved_events', eventJsonList);
       await prefs.setString('saved_events_title', eventTitle);
 
+      // --- Lyrics ---
+      lyricsSnapshot = await db.collection("lyrics_files").get();
+      final List lyricsList = lyricsSnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['posts'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
+
+      final lyrics = lyricsList.map((dynamic articles) {
+        final map = articles as Map<String, dynamic>;
+        return Lyrics.fromJson(map);
+      }).toList();
+
+      debugPrint("Firebase is lyrics $lyrics");
+
+      final List<String> lyricsJsonList =
+          lyrics.map((lyric) => jsonEncode(lyric.toJson())).toList();
+      await prefs.setStringList('saved_lyrics', lyricsJsonList);
+
       return AppDataDetails(
-        announcements: announcements,
-        events: events,
-      );
+          announcements: announcements, events: events, lyrics: lyrics);
     } catch (e) {
       return "Firebase Failed to fetch data: ${e.toString()}";
     }
@@ -162,9 +185,10 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
 class AppDataDetails {
   final List<Announcement> announcements;
   final List<Event> events;
+  final List<Lyrics> lyrics;
 
-  AppDataDetails({
-    required this.announcements,
-    required this.events,
-  });
+  AppDataDetails(
+      {required this.announcements,
+      required this.events,
+      required this.lyrics});
 }
