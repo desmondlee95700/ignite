@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Video.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'video_event.dart';
@@ -81,44 +82,115 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
 
   Future<dynamic> _fetchReels({String? nextKey, String? type}) async {
     try {
-   
+      final prefs = await SharedPreferences.getInstance();
+
+      final cachedMusicVideo = prefs.getStringList('saved_musicvideo');
+      final cachedConferenceVideo =
+          prefs.getStringList('saved_conferencevideo');
+      final cachedLyricVideo = prefs.getStringList('saved_lyricvideo');
+
       final db = FirebaseFirestore.instance;
       QuerySnapshot querySnapshot;
 
       String collectionName;
       String documentId;
+
       if (type == "musicvideo") {
         collectionName = 'music_video';
         documentId = 'music_video_posts';
+
+        if (cachedMusicVideo != null) {
+          print("Firebase music video cache");
+          final musicVideos = cachedMusicVideo.map((jsonStr) {
+            final Map<String, dynamic> map = jsonDecode(jsonStr);
+            return Video.fromJson(map);
+          }).toList();
+
+          nextKey = null;
+
+          bool hasReachedMax = false;
+          if (nextKey == null || musicVideos.isEmpty) {
+            hasReachedMax = true;
+          }
+
+          return ReelsApiDetails(
+            videos: musicVideos,
+            nextKey: nextKey,
+            hasReachedMax: hasReachedMax,
+          );
+        }
       } else if (type == "lyricvideo") {
         collectionName = 'lyric_video';
         documentId = 'lyric_video_posts';
+
+        if (cachedLyricVideo != null) {
+          print("Firebase lyric video cache");
+          final lyricVideos = cachedLyricVideo.map((jsonStr) {
+            final Map<String, dynamic> map = jsonDecode(jsonStr);
+            return Video.fromJson(map);
+          }).toList();
+
+          nextKey = null;
+
+          bool hasReachedMax = false;
+          if (nextKey == null || lyricVideos.isEmpty) {
+            hasReachedMax = true;
+          }
+
+          return ReelsApiDetails(
+            videos: lyricVideos,
+            nextKey: nextKey,
+            hasReachedMax: hasReachedMax,
+          );
+        }
       } else if (type == "conferencevideo") {
         collectionName = 'conference_video';
         documentId = 'conference_video_posts';
+
+        if (cachedConferenceVideo != null) {
+          print("Firebase conference video cache");
+          final conferenceVideos = cachedConferenceVideo.map((jsonStr) {
+            final Map<String, dynamic> map = jsonDecode(jsonStr);
+            return Video.fromJson(map);
+          }).toList();
+
+          nextKey = null;
+
+          bool hasReachedMax = false;
+          if (nextKey == null || conferenceVideos.isEmpty) {
+            hasReachedMax = true;
+          }
+
+          return ReelsApiDetails(
+            videos: conferenceVideos,
+            nextKey: nextKey,
+            hasReachedMax: hasReachedMax,
+          );
+        }
       } else {
         throw ArgumentError('Unsupported type: $type');
       }
 
-      if (nextKey != null) {
-        final lastDocument = await db
-            .collection(collectionName)
-            .doc(documentId) 
-            .get();
+      // if (nextKey != null) {
+      //   final lastDocument =
+      //       await db.collection(collectionName).doc(documentId).get();
 
-        querySnapshot = await db
-            .collection(collectionName)
-            .orderBy('post_date')
-            .startAfterDocument(lastDocument) 
-            .get();
-      } else {
-        querySnapshot = await db.collection(collectionName).get();
-      }
+      //   querySnapshot = await db
+      //       .collection(collectionName)
+      //       .orderBy('post_date')
+      //       .startAfterDocument(lastDocument)
+      //       .get();
+      // } else {
+      //   querySnapshot = await db.collection(collectionName).get();
+      // }
+
+      // --- If no cache exists, fetch from Firestore ---
+      querySnapshot = await db.collection(collectionName).get();
 
       final List list = querySnapshot.docs
           .map((doc) {
             final data = doc.data() as Map<String, dynamic>;
-            return data['posts'] ?? []; 
+            return data['posts'] ?? [];
           })
           .expand((element) => element)
           .toList();
@@ -127,13 +199,11 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         nextKey = null;
       } else {
         nextKey = null;
-           
       }
 
       final videos = list.map((dynamic articles) {
         final map = articles as Map<String, dynamic>;
-        return Video.fromJson(
-            map); 
+        return Video.fromJson(map);
       }).toList();
 
       bool hasReachedMax = false;

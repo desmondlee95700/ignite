@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/model/Lyrics.dart';
+import 'package:ignite/model/Video.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -72,6 +73,9 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
       QuerySnapshot announcementSnapshot;
       QuerySnapshot eventSnapshot;
       QuerySnapshot lyricsSnapshot;
+      QuerySnapshot musicVideoSnapshot;
+      QuerySnapshot conferenceVideoSnapshot;
+      QuerySnapshot lyricVideoSnapshot;
 
       // --- Annoucement ---
       announcementSnapshot = await db.collection("announcement_news").get();
@@ -92,8 +96,8 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
               announceTitle != null) // Filter out any null titles
           .join(', ');
 
-      final announcements = announceList.map((dynamic articles) {
-        final map = articles as Map<String, dynamic>;
+      final announcements = announceList.map((dynamic annoucements) {
+        final map = annoucements as Map<String, dynamic>;
         return Announcement.fromJson(map);
       }).toList();
 
@@ -128,12 +132,10 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
           .where((eventTitle) => eventTitle != null)
           .join(', ');
 
-      final events = eventList.map((dynamic articles) {
-        final map = articles as Map<String, dynamic>;
+      final events = eventList.map((dynamic events) {
+        final map = events as Map<String, dynamic>;
         return Event.fromJson(map);
       }).toList();
-
-      debugPrint("Firebase is event $events");
 
       events.sort((a, b) {
         final dateA = a.start_post_date;
@@ -163,19 +165,85 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
           .expand((element) => element)
           .toList();
 
-      final lyrics = lyricsList.map((dynamic articles) {
-        final map = articles as Map<String, dynamic>;
+      final lyrics = lyricsList.map((dynamic lyrics) {
+        final map = lyrics as Map<String, dynamic>;
         return Lyrics.fromJson(map);
       }).toList();
-
-      debugPrint("Firebase is lyrics $lyrics");
 
       final List<String> lyricsJsonList =
           lyrics.map((lyric) => jsonEncode(lyric.toJson())).toList();
       await prefs.setStringList('saved_lyrics', lyricsJsonList);
 
+      // --- Video ---
+      //music video
+      musicVideoSnapshot = await db.collection("music_video").get();
+      final List musicVideoList = musicVideoSnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['posts'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
+
+      final musicVideo = musicVideoList.map((dynamic musicvideos) {
+        final map = musicvideos as Map<String, dynamic>;
+        return Video.fromJson(map);
+      }).toList();
+
+      final List<String> musicVideoJsonList = musicVideo
+          .map((musicvideo) => jsonEncode(musicvideo.toJson()))
+          .toList();
+      await prefs.setStringList('saved_musicvideo', musicVideoJsonList);
+
+      //conference video
+      conferenceVideoSnapshot = await db.collection("conference_video").get();
+      final List conferenceVideoList = conferenceVideoSnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['posts'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
+
+      final conferenceVideo =
+          conferenceVideoList.map((dynamic conferencevideos) {
+        final map = conferencevideos as Map<String, dynamic>;
+        return Video.fromJson(map);
+      }).toList();
+
+      final List<String> conferenceVideoJsonList = conferenceVideo
+          .map((conferencevideo) => jsonEncode(conferencevideo.toJson()))
+          .toList();
+      await prefs.setStringList(
+          'saved_conferencevideo', conferenceVideoJsonList);
+
+      //lyric video
+      lyricVideoSnapshot = await db.collection("lyric_video").get();
+      final List lyricVideoList = lyricVideoSnapshot.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return data['posts'] ?? [];
+          })
+          .expand((element) => element)
+          .toList();
+
+      final lyricVideo = lyricVideoList.map((dynamic lyricvideos) {
+        final map = lyricvideos as Map<String, dynamic>;
+        return Video.fromJson(map);
+      }).toList();
+
+      final List<String> lyricVideoJsonList = lyricVideo
+          .map((lyricvideo) => jsonEncode(lyricvideo.toJson()))
+          .toList();
+      await prefs.setStringList('saved_lyricvideo', lyricVideoJsonList);
+
       return AppDataDetails(
-          announcements: announcements, events: events, lyrics: lyrics);
+          announcements: announcements,
+          events: events,
+          lyrics: lyrics,
+          musicVideos: musicVideo,
+          conferenceVideos: conferenceVideo,
+          lyricVideos: lyricVideo);
     } catch (e) {
       return "Firebase Failed to fetch data: ${e.toString()}";
     }
@@ -186,9 +254,15 @@ class AppDataDetails {
   final List<Announcement> announcements;
   final List<Event> events;
   final List<Lyrics> lyrics;
+  final List<Video> musicVideos;
+  final List<Video> conferenceVideos;
+  final List<Video> lyricVideos;
 
   AppDataDetails(
       {required this.announcements,
       required this.events,
-      required this.lyrics});
+      required this.lyrics,
+      required this.musicVideos,
+      required this.conferenceVideos,
+      required this.lyricVideos});
 }
