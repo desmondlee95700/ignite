@@ -12,7 +12,7 @@ final class Event {
   String? title;
   DateTime? start_post_date;
   DateTime? end_post_date;
-  String? schedule_image;
+  List<String>? schedule_image; // changed to list of strings
   String? image;
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -33,21 +33,31 @@ final class Event {
       endPostDate = DateTime.tryParse(endPostDateRaw);
     }
 
+    // Parse schedule_image as List<String> if possible
+    List<String>? scheduleImageList;
+    if (json['schedule_image'] is List) {
+      scheduleImageList = List<String>.from(json['schedule_image']);
+    } else if (json['schedule_image'] is String) {
+      // fallback: if it’s a single string, wrap it in a list
+      scheduleImageList = [json['schedule_image']];
+    }
+
     return Event(
-        title: json["title"],
-        start_post_date: startPostDate,
-        end_post_date: endPostDate,
-        image: json["image"],
-        schedule_image: json["schedule_image"]);
+      title: json["title"],
+      start_post_date: startPostDate,
+      end_post_date: endPostDate,
+      image: json["image"],
+      schedule_image: scheduleImageList,
+    );
   }
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
+    return {
       "title": title,
       "start_post_date": start_post_date?.toIso8601String(),
       "end_post_date": end_post_date?.toIso8601String(),
       "image": image,
-      "schedule_image": schedule_image
+      "schedule_image": schedule_image,
     };
-    return data;
   }
 }

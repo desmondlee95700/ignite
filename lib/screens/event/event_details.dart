@@ -199,77 +199,148 @@ class _EventDetailsPage extends State<EventDetailsPage>
                               onTap: () {
                                 if (widget.events.schedule_image!.isNotEmpty) {
                                   showModalBottomSheet(
+                                    backgroundColor: darkThemeColor,
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return SizedBox(
-                                        height: 400,
-                                        width: double.infinity,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(12),
-                                                      topRight:
-                                                          Radius.circular(12)),
-                                              child: CachedNetworkImage(
-                                                imageUrl: widget
-                                                    .events.schedule_image!,
-                                                imageBuilder:
-                                                    (context, imageProvider) =>
-                                                        Container(
-                                                  height: 400,
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.fill,
-                                                    ),
+                                      final images =
+                                          widget.events.schedule_image ?? [];
+                                      final pageController = PageController();
+                                      int currentPage = 0;
+
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return SizedBox(
+                                            height: 420,
+                                            width: double.infinity,
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                  child: PageView.builder(
+                                                    scrollDirection: Axis.horizontal,
+                                                    pageSnapping: true,
+                                                    controller: pageController,
+                                                    itemCount: images.length,
+                                                    onPageChanged: (index) {
+                                                      setState(() {
+                                                        currentPage = index;
+                                                      });
+                                                    },
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      final imageUrl =
+                                                          images[index];
+                                                      return ClipRRect(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  12),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  12),
+                                                        ),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl: imageUrl,
+                                                          imageBuilder: (context,
+                                                                  imageProvider) =>
+                                                              Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  darkThemeColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              image:
+                                                                  DecorationImage(
+                                                                image:
+                                                                    imageProvider,
+                                                                fit: BoxFit.contain,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          placeholder:
+                                                              (context, url) =>
+                                                                  Container(
+                                                            color: Colors.grey,
+                                                            child: const Center(
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            ),
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  Colors.black,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          16),
+                                                              image:
+                                                                  const DecorationImage(
+                                                                image: AssetImage(
+                                                                    "assets/images/ignite_icon.jpg"),
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
-                                                placeholder: (context, url) {
-                                                  return Container(
-                                                    height: 400,
-                                                    width: double.infinity,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16),
+
+                                                // Show indicator only if more than 1 image
+                                                if (images.length > 1)
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 8),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: List.generate(
+                                                          images.length,
+                                                          (index) {
+                                                        return Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      4),
+                                                          width: currentPage ==
+                                                                  index
+                                                              ? 8
+                                                              : 4,
+                                                          height: currentPage ==
+                                                                  index
+                                                              ? 8
+                                                              : 4,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: currentPage ==
+                                                                    index
+                                                                ? kPrimaryColor
+                                                                : Colors.grey
+                                                                    .shade400,
+                                                          ),
+                                                        );
+                                                      }),
                                                     ),
-                                                  );
-                                                },
-                                                errorWidget:
-                                                    (context, url, error) {
-                                                  return Container(
-                                                    height: 400,
-                                                    width: double.infinity,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16),
-                                                      image:
-                                                          const DecorationImage(
-                                                        image: AssetImage(
-                                                          "assets/images/ignite_icon.jpg",
-                                                        ),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
+                                                  ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
+                                          );
+                                        },
                                       );
                                     },
                                   );
