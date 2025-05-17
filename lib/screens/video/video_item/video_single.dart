@@ -168,8 +168,6 @@ class _VideoSinglePageState extends State<VideoSinglePage> {
               ),
             ),
             RemainingDuration(),
-            PlaybackSpeedButton(),
-            //FullScreenButton(),
           ],
           thumbnail: widget.thumbnail != null
               ? CachedNetworkImage(

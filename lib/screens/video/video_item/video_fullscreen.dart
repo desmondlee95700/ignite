@@ -165,8 +165,6 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
               ),
             ),
             RemainingDuration(),
-            PlaybackSpeedButton(),
-            //FullScreenButton(),
           ],
           thumbnail: widget.videos.thumbnail != null
               ? CachedNetworkImage(

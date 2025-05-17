@@ -133,6 +133,26 @@ class _AppBodyState extends State<AppBody> {
                         child: YoutubePlayer(
                           controller: _youtubePlayerController,
                           showVideoProgressIndicator: true,
+                          actionsPadding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          progressIndicatorColor: kPrimaryColor,
+                          progressColors: const ProgressBarColors(
+                              playedColor: kPrimaryColor,
+                              backgroundColor: Colors.black,
+                              bufferedColor: darkThemeColor),
+                          bottomActions: const [
+                            SizedBox(width: 2.0),
+                            CurrentPosition(),
+                            SizedBox(width: 5.0),
+                            ProgressBar(
+                              isExpanded: true,
+                              colors: ProgressBarColors(
+                                playedColor: kPrimaryColor,
+                                handleColor: Colors.white,
+                              ),
+                            ),
+                            RemainingDuration(),
+                          ],
                         ),
                       ),
                       Positioned(

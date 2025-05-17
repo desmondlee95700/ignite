@@ -116,7 +116,8 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
                           fitPolicy: FitPolicy.BOTH,
                           fitEachPage: true,
                           preventLinkNavigation: false,
-                          backgroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          nightMode: true,
                           onRender: (pages) {
                             setState(() {
                               isReady = true;
@@ -208,9 +209,9 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
       margin: const EdgeInsets.symmetric(horizontal: 10),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+        color: Colors.black.withOpacity(0.7),
         borderRadius: BorderRadius.circular(10),
-        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 5)],
+        boxShadow: const [BoxShadow(color: Colors.white, blurRadius: 5)],
       ),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -226,7 +227,7 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
               });
             },
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 border: Border.all(
@@ -236,20 +237,38 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
                     width: 2),
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: Stack(
                 children: [
                   thumbnails.isNotEmpty
-                      ? Image.memory(thumbnails[index], width: 50)
+                      ? Image.memory(thumbnails[index],
+                          width: 90, fit: BoxFit.fill)
                       : const Icon(HugeIcons.strokeRoundedImage01, size: 30),
-                  const SizedBox(height: 4), // Space between image and text
-                  Text(
-                    (index + 1).toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color:
-                          (currentPage == index) ? kPrimaryColor : Colors.black,
+                  Positioned(
+                    bottom: 5,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: (currentPage == index)
+                              ? kPrimaryColor
+                              : Colors.grey[300],
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          (index + 1).toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: (currentPage == index)
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

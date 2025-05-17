@@ -7,7 +7,6 @@ import 'package:ignite/screens/lyrics/lyrics_bloc/lyrics_bloc.dart';
 import 'package:ignite/screens/lyrics/pdf_viewer.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,6 +21,10 @@ class LyricsPage extends StatefulWidget {
 
 class _LyricsPageState extends State<LyricsPage> {
   final LyricsBloc lyricsBloc = LyricsBloc(httpClient: http.Client());
+  final TextEditingController searchController = TextEditingController();
+
+  List<dynamic> filteredLyrics = [];
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -30,7 +33,6 @@ class _LyricsPageState extends State<LyricsPage> {
   }
 
   void openPDF(BuildContext context, String url, String title) async {
-    // Show loader
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -40,40 +42,60 @@ class _LyricsPageState extends State<LyricsPage> {
     );
 
     try {
-
-      // Dismiss loader
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-
-      // Navigate to PDFViewer
+      if (context.mounted) Navigator.pop(context);
       if (context.mounted) {
         Navigator.push(
           context,
           PageTransition(
-              type: PageTransitionType.rightToLeft,
-              duration: const Duration(milliseconds: 600),
-              reverseDuration: const Duration(milliseconds: 600),
-              isIos: true,
-              child: PDFViewer(
-                title: title,
-                filePath: url,
-              )),
+            type: PageTransitionType.rightToLeft,
+            duration: const Duration(milliseconds: 600),
+            reverseDuration: const Duration(milliseconds: 600),
+            isIos: true,
+            child: PDFViewer(title: title, filePath: url),
+          ),
         );
       }
     } catch (e) {
-      // Dismiss loader if an error occurs
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-
-      // Show error message
+      if (context.mounted) Navigator.pop(context);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load PDF: $e')),
         );
       }
     }
+  }
+
+  void filterLyrics(String query, List<dynamic> allLyrics) {
+    setState(() {
+      searchQuery = query;
+      filteredLyrics = allLyrics
+          .where((lyric) =>
+              lyric.title.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  Widget _buildSearchBar(List<dynamic> allLyrics) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: TextField(
+        style: const TextStyle(color: Colors.white),
+        controller: searchController,
+        onChanged: (value) => filterLyrics(value, allLyrics),
+        decoration: InputDecoration(
+          focusColor: Colors.white,
+          prefixIcon: Icon(HugeIcons.strokeRoundedSearch01,
+              color: Colors.grey.shade800),
+          hintText: "Search lyrics...",
+          filled: true,
+          fillColor: Colors.black.withOpacity(0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -87,7 +109,7 @@ class _LyricsPageState extends State<LyricsPage> {
             snap: true,
             surfaceTintColor: Colors.transparent,
             title: Text(
-              " | Ignite Lyrics",
+              " | Lyrics",
               style: TextStyle(
                 color: kPrimaryColor,
                 fontFamily: 'Manrope',
@@ -128,104 +150,121 @@ class _LyricsPageState extends State<LyricsPage> {
                 },
               );
             } else if (state.status == LyricsStatus.success) {
+              final allLyrics = state.lyrics;
+              final displayLyrics =
+                  searchQuery.isEmpty ? allLyrics : filteredLyrics;
+
               return RefreshIndicator(
                 onRefresh: () async {
+                  searchController.clear();
+                  searchQuery = '';
                   lyricsBloc.add(FetchLyrics(retrying: true));
                 },
-                child: GridView.builder(
-                  padding: const EdgeInsets.all(10.0),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: state.lyrics.length,
-                  itemBuilder: (context, index) {
-                    final lyric = state.lyrics[index];
-                    return InkWell(
-                      onTap: (){
-                        openPDF(context, lyric.pdf_url, lyric.title);
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                child: Column(
+                  children: [
+                    _buildSearchBar(allLyrics),
+                    Expanded(
+                      child: GridView.builder(
+                        padding: const EdgeInsets.all(10.0),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
+                          childAspectRatio: 0.8,
                         ),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: CachedNetworkImage(
-                                imageUrl: lyric.image_url,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  height: 250,
-                                  width: 200,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.circular(12),
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.fill,
+                        itemCount: displayLyrics.length,
+                        itemBuilder: (context, index) {
+                          final lyric = displayLyrics[index];
+                          return InkWell(
+                            onTap: () {
+                              openPDF(context, lyric.pdf_url, lyric.title);
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: CachedNetworkImage(
+                                      imageUrl: lyric.image_url,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        height: 250,
+                                        width: 200,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) {
+                                        return Container(
+                                          height: 250,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return Container(
+                                          height: 250,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            image: const DecorationImage(
+                                              image: AssetImage(
+                                                  "assets/images/ignite_icon.jpg"),
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
-                                ),
-                                placeholder: (context, url) {
-                                  return Container(
-                                    height: 250,
-                                    width: 200,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                  );
-                                },
-                                errorWidget: (context, url, error) {
-                                  return Container(
-                                    height: 250,
-                                    width: 200,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(16),
-                                      image: const DecorationImage(
-                                        image: AssetImage(
-                                          "assets/images/ignite_icon.jpg",
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Container(
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
-                                        fit: BoxFit.fill,
+                                        child: Text(
+                                          lyric.title,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Manrope',
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  );
-                                },
+                                  ),
+                                ],
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Container(
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    lyric.title,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Manrope',
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               );
             } else if (state.status == LyricsStatus.failure) {

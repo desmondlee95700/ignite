@@ -371,7 +371,7 @@ class _EventDetailsPage extends State<EventDetailsPage>
                       ),
                     ),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(30)),
+                  SizedBox(height: getProportionateScreenHeight(100)),
                   SwipeButton(
                     thumbPadding: const EdgeInsets.all(5),
                     thumb: const Icon(
@@ -383,7 +383,7 @@ class _EventDetailsPage extends State<EventDetailsPage>
                     elevationThumb: 2,
                     elevationTrack: 2,
                     child: const Text(
-                      "Swipe to ...",
+                      "COMING SOON",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
