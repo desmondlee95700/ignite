@@ -11,6 +11,7 @@ import 'package:ignite/model/Lyrics.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'appdata_event.dart';
 part 'appdata_state.dart';
@@ -72,7 +73,7 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
       final db = FirebaseFirestore.instance;
       QuerySnapshot announcementSnapshot;
       QuerySnapshot eventSnapshot;
-      QuerySnapshot lyricsSnapshot;
+      //QuerySnapshot lyricsSnapshot;
       QuerySnapshot musicVideoSnapshot;
       QuerySnapshot conferenceVideoSnapshot;
       QuerySnapshot lyricVideoSnapshot;
@@ -156,23 +157,36 @@ class AppDataBloc extends Bloc<AppDataEvent, AppDataState> {
       await prefs.setString('saved_events_title', eventTitle);
 
       // --- Lyrics ---
-      lyricsSnapshot = await db.collection("lyrics_files").get();
-      final List lyricsList = lyricsSnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['posts'] ?? [];
-          })
-          .expand((element) => element)
-          .toList();
+      final lyricsResponse = await Supabase.instance.client
+          .from('lyrics')
+          .select()
+          .order('id', ascending: true);
 
-      final lyrics = lyricsList.map((dynamic lyrics) {
-        final map = lyrics as Map<String, dynamic>;
-        return Lyrics.fromJson(map);
-      }).toList();
+      final lyrics = (lyricsResponse as List<dynamic>)
+          .map((l) => Lyrics.fromJson(l as Map<String, dynamic>))
+          .toList();
 
       final List<String> lyricsJsonList =
           lyrics.map((lyric) => jsonEncode(lyric.toJson())).toList();
       await prefs.setStringList('saved_lyrics', lyricsJsonList);
+
+      // lyricsSnapshot = await db.collection("lyrics_files").get();
+      // final List lyricsList = lyricsSnapshot.docs
+      //     .map((doc) {
+      //       final data = doc.data() as Map<String, dynamic>;
+      //       return data['posts'] ?? [];
+      //     })
+      //     .expand((element) => element)
+      //     .toList();
+
+      // final lyrics = lyricsList.map((dynamic lyrics) {
+      //   final map = lyrics as Map<String, dynamic>;
+      //   return Lyrics.fromJson(map);
+      // }).toList();
+
+      // final List<String> lyricsJsonList =
+      //     lyrics.map((lyric) => jsonEncode(lyric.toJson())).toList();
+      // await prefs.setStringList('saved_lyrics', lyricsJsonList);
 
       // --- Video ---
       //music video

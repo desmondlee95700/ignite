@@ -1,5 +1,6 @@
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_in_app_pip/picture_in_picture.dart';
 import 'package:flutter_in_app_pip/pip_params.dart';
@@ -195,79 +196,86 @@ class _AppBodyState extends State<AppBody> {
             });
           }
         },
-        child: Scaffold(
-          extendBody: true,
-          bottomNavigationBar: FlashyTabBar(
-            animationCurve: Curves.linear,
-            selectedIndex: _currentPage,
-            showElevation: false,
-            backgroundColor: darkThemeColor,
-            onItemSelected: (index) {
-              final now = DateTime.now();
-              if (_currentPage == index) {
-                if (_lastTapTime == null ||
-                    now.difference(_lastTapTime!) >
-                        const Duration(milliseconds: 300)) {
-                  _lastTapTime = now;
-                } else {
-                  _scrollControllers[index]?.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                  _lastTapTime = null;
-                }
-              } else {
-                setState(() => _currentPage = index);
-                _pageController.jumpToPage(index);
-              }
-            },
-            items: [
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedFire),
-                  title: const Text('Ignite'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedMegaphone02),
-                  title: const Text('News'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedFileMusic),
-                  title: const Text('Lyrics'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedPlayList),
-                  title: const Text('Video'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
-              FlashyTabBarItem(
-                  icon: const Icon(HugeIcons.strokeRoundedSettings03),
-                  title: const Text('Setting'),
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.grey),
-            ],
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: darkThemeColor,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
           ),
-          body: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              HomePage(
-                  key: PageStorageKey('homePage'),
-                  controller: _scrollControllers[0]!),
-              AnnoucementPage(
-                  key: PageStorageKey('announcementPage'),
-                  controller: _scrollControllers[1]!),
-              LyricsPage(
-                  key: PageStorageKey('lyricsPage'),
-                  controller: _scrollControllers[2]!),
-              VideoPage(
-                  key: PageStorageKey('videoPage'),
-                  controller: _scrollControllers[3]!),
-              SettingsPage(key: PageStorageKey('settingsPage')),
-            ],
+          child: Scaffold(
+            extendBody: true,
+            bottomNavigationBar: FlashyTabBar(
+              animationCurve: Curves.linear,
+              selectedIndex: _currentPage,
+              showElevation: false,
+              backgroundColor: darkThemeColor,
+              onItemSelected: (index) {
+                final now = DateTime.now();
+                if (_currentPage == index) {
+                  if (_lastTapTime == null ||
+                      now.difference(_lastTapTime!) >
+                          const Duration(milliseconds: 300)) {
+                    _lastTapTime = now;
+                  } else {
+                    _scrollControllers[index]?.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                    _lastTapTime = null;
+                  }
+                } else {
+                  setState(() => _currentPage = index);
+                  _pageController.jumpToPage(index);
+                }
+              },
+              items: [
+                FlashyTabBarItem(
+                    icon: const Icon(HugeIcons.strokeRoundedFire),
+                    title: const Text('Ignite'),
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey),
+                FlashyTabBarItem(
+                    icon: const Icon(HugeIcons.strokeRoundedMegaphone02),
+                    title: const Text('News'),
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey),
+                FlashyTabBarItem(
+                    icon: const Icon(HugeIcons.strokeRoundedFileMusic),
+                    title: const Text('Lyrics'),
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey),
+                FlashyTabBarItem(
+                    icon: const Icon(HugeIcons.strokeRoundedPlayList),
+                    title: const Text('Video'),
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey),
+                FlashyTabBarItem(
+                    icon: const Icon(HugeIcons.strokeRoundedSettings03),
+                    title: const Text('Setting'),
+                    activeColor: Colors.white,
+                    inactiveColor: Colors.grey),
+              ],
+            ),
+            body: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                HomePage(
+                    key: PageStorageKey('homePage'),
+                    controller: _scrollControllers[0]!),
+                AnnoucementPage(
+                    key: PageStorageKey('announcementPage'),
+                    controller: _scrollControllers[1]!),
+                LyricsPage(
+                    key: PageStorageKey('lyricsPage'),
+                    controller: _scrollControllers[2]!),
+                VideoPage(
+                    key: PageStorageKey('videoPage'),
+                    controller: _scrollControllers[3]!),
+                SettingsPage(key: PageStorageKey('settingsPage')),
+              ],
+            ),
           ),
         ),
       ),

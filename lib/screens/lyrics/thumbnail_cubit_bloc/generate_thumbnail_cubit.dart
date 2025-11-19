@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pdf_render/pdf_render.dart';
+import 'package:pdfx/pdfx.dart';
 
 part 'generate_thumbnail_state.dart';
 
@@ -18,25 +18,33 @@ class PdfThumbnailsCubit extends Cubit<PdfThumbnailsState> {
       emit(PdfThumbnailsLoading());
 
       final pdfDoc = await PdfDocument.openFile(filePath);
-      List<Uint8List> tempThumbnails = [];
+      final List<Uint8List> thumbnails = [];
 
-      for (int i = 0; i < pdfDoc.pageCount; i++) {
-        final page = await pdfDoc.getPage(i + 1);
-        final pageImage = await page.render();
-        final ui.Image image = await pageImage.createImageDetached();
-        final ByteData? pngData =
-            await image.toByteData(format: ui.ImageByteFormat.png);
+      for (int index = 1; index <= pdfDoc.pagesCount; index++) {
+        final page = await pdfDoc.getPage(index);
+        final pageImage = await page.render(
+          width: 250, // lower resolution
+          height: (page.height * 250 / page.width).toDouble(),
+          format: PdfPageImageFormat.png,
+        );
 
-        if (pngData != null) {
-          tempThumbnails.add(pngData.buffer.asUint8List());
+        await page.close(); // Properly close page after rendering
+
+        if (pageImage!.bytes.isNotEmpty) {
+          thumbnails.add(pageImage.bytes);
         }
       }
 
-      emit(PdfThumbnailsLoaded(thumbnails: tempThumbnails, totalPages: pdfDoc.pageCount));
+      await pdfDoc.close();
+
+      emit(PdfThumbnailsLoaded(
+        thumbnails: thumbnails,
+        totalPages: pdfDoc.pagesCount,
+      ));
     } catch (e) {
       debugPrint("Generate fail ${e.toString()}");
-      emit(PdfThumbnailsError("Failed to generate thumbnails: ${e.toString()}"));
+      emit(
+          PdfThumbnailsError("Failed to generate thumbnails: ${e.toString()}"));
     }
   }
 }
-

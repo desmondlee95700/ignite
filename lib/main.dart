@@ -12,10 +12,16 @@ import 'package:ignite/screens/appdata_bloc/appdata_bloc.dart';
 import 'package:ignite/screens/lyrics/thumbnail_cubit_bloc/generate_thumbnail_cubit.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/splash_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await Supabase.initialize(
+    url: 'https://dcwstfkgieuzrtyhfnfs.supabase.co',
+    anonKey: 'sb_publishable_KbIbbnsu3gIMnSeCwUZyRQ_b-4Cwkq5',
+  );
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 

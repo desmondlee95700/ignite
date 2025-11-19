@@ -4,10 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Lyrics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'lyrics_event.dart';
 
@@ -22,8 +24,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
-  LyricsBloc({required this.httpClient})
-      : super(const LyricsState()) {
+  LyricsBloc({required this.httpClient}) : super(const LyricsState()) {
     on<FetchLyrics>(_onCollectionFetched,
         transformer: throttleDroppable(throttleDuration));
   }
@@ -78,19 +79,69 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
     }
   }
 
+  // Future<dynamic> _fetchCollection() async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+
+  //     final cachedData = prefs.getStringList('saved_lyrics');
+
+  //     if (cachedData != null) {
+  //       print("Firebase lyrics cache");
+  //       final lyrics = cachedData.map((jsonStr) {
+  //         final Map<String, dynamic> map = jsonDecode(jsonStr);
+  //         return Lyrics.fromJson(map);
+  //       }).toList();
+
+  //       return LyricsAPIDetails(
+  //         lyrics: lyrics,
+  //         hasReachedMax: true,
+  //       );
+  //     }
+
+  //     // --- If no cache exists, fetch from Firestore ---
+  //     print("Firebase lyrics no cache");
+  //     final db = FirebaseFirestore.instance;
+  //     final querySnapshot = await db.collection("lyrics_files").get();
+
+  //     final List list = querySnapshot.docs
+  //         .map((doc) {
+  //           final data = doc.data() as Map<String, dynamic>;
+  //           return data['posts'] ?? [];
+  //         })
+  //         .expand((element) => element)
+  //         .toList();
+
+  //     final lyrics = list.map((dynamic article) {
+  //       final map = article as Map<String, dynamic>;
+  //       return Lyrics.fromJson(map);
+  //     }).toList();
+
+  //     // Cache to SharedPreferences
+  //     final jsonList =
+  //         lyrics.map((a) => jsonEncode(a.toJson())).toList();
+  //     await prefs.setStringList('saved_lyrics', jsonList);
+
+  //     return LyricsAPIDetails(
+  //       lyrics: lyrics,
+  //       hasReachedMax: true,
+  //     );
+  //   } catch (error) {
+  //     print("Failed to load lyrics: $error");
+  //     return "Temporarily unable to load Ignite due to technical difficulties, please try again later...";
+  //   }
+  // }
   Future<dynamic> _fetchCollection() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
       final cachedData = prefs.getStringList('saved_lyrics');
 
+      // --- If cache exists ---
       if (cachedData != null) {
-        print("Firebase lyrics cache");
+        print("Supabase lyrics cache");
         final lyrics = cachedData.map((jsonStr) {
           final Map<String, dynamic> map = jsonDecode(jsonStr);
           return Lyrics.fromJson(map);
         }).toList();
-
 
         return LyricsAPIDetails(
           lyrics: lyrics,
@@ -98,33 +149,33 @@ class LyricsBloc extends Bloc<LyricsEvent, LyricsState> {
         );
       }
 
-      // --- If no cache exists, fetch from Firestore ---
-      print("Firebase lyrics no cache");
-      final db = FirebaseFirestore.instance;
-      final querySnapshot = await db.collection("lyrics_files").get();
+      // --- Fetch from Supabase ---
+      print("Supabase lyrics no cache");
 
-      final List list = querySnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['posts'] ?? [];
-          })
-          .expand((element) => element)
-          .toList();
+      final supabase = Supabase.instance.client;
 
-      final lyrics = list.map((dynamic article) {
-        final map = article as Map<String, dynamic>;
-        return Lyrics.fromJson(map);
-      }).toList();
+      try {
+        final response =
+            await supabase.from('lyrics').select().order('id', ascending: true);
+        // Convert list<dynamic> → List<Lyrics>
+        final lyrics = (response as List<dynamic>)
+            .map((item) => Lyrics.fromJson(item as Map<String, dynamic>))
+            .toList();
 
-      // Cache to SharedPreferences
-      final jsonList =
-          lyrics.map((a) => jsonEncode(a.toJson())).toList();
-      await prefs.setStringList('saved_lyrics', jsonList);
-
-      return LyricsAPIDetails(
-        lyrics: lyrics,
-        hasReachedMax: true,
-      );
+        // Save to SharedPreferences cache
+        final jsonList = lyrics.map((l) => jsonEncode(l.toJson())).toList();
+        await prefs.setStringList('saved_lyrics', jsonList);
+        return LyricsAPIDetails(
+          lyrics: lyrics,
+          hasReachedMax: true,
+        );
+      } catch (e) {
+        debugPrint("Supabase response $e");
+        return LyricsAPIDetails(
+          lyrics: [],
+          hasReachedMax: true,
+        );
+      }
     } catch (error) {
       print("Failed to load lyrics: $error");
       return "Temporarily unable to load Ignite due to technical difficulties, please try again later...";
