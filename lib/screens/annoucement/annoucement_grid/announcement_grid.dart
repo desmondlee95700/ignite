@@ -50,7 +50,18 @@ class ExploreGridItem extends StatelessWidget {
                       ),
                     ),
                   )
-                : null;
+                : Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      duration: const Duration(milliseconds: 300),
+                      reverseDuration: const Duration(milliseconds: 300),
+                      isIos: true,
+                      child: WebViewPage(
+                        url: announcement.url.toString(),
+                      ),
+                    ),
+                  );
       },
       onLongPress: () {
         HapticFeedback.vibrate();

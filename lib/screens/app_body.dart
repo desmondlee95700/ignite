@@ -248,7 +248,7 @@ class _AppBodyState extends State<AppBody> {
                     activeColor: Colors.white,
                     inactiveColor: Colors.grey),
                 FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedEar),
+                    icon: const Icon(HugeIcons.strokeRoundedMusicNote02),
                     title: const Text('Listen'),
                     activeColor: Colors.white,
                     inactiveColor: Colors.grey),
