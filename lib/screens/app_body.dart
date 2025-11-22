@@ -6,6 +6,7 @@ import 'package:flutter_in_app_pip/picture_in_picture.dart';
 import 'package:flutter_in_app_pip/pip_params.dart';
 import 'package:flutter_in_app_pip/pip_view_corner.dart';
 import 'package:flutter_in_app_pip/pip_widget.dart';
+import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/exit_app.dart';
@@ -15,6 +16,7 @@ import 'package:ignite/screens/home/home.dart';
 import 'package:ignite/screens/lyrics/lyrics_page.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/screens/settings/settings.dart';
+import 'package:ignite/screens/video/musicitem_bloc/musicitem_bloc.dart';
 import 'package:ignite/screens/video/video.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -54,7 +56,7 @@ class _AppBodyState extends State<AppBody> {
         HomePage(controller: _scrollControllers[0]!),
         AnnoucementPage(controller: _scrollControllers[1]!),
         LyricsPage(controller: _scrollControllers[2]!),
-        VideoPage(controller: _scrollControllers[2]!),
+        MusicVideosPage(controller: _scrollControllers[3]!),
         const SettingsPage(),
       ];
 
@@ -246,8 +248,8 @@ class _AppBodyState extends State<AppBody> {
                     activeColor: Colors.white,
                     inactiveColor: Colors.grey),
                 FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedPlayList),
-                    title: const Text('Video'),
+                    icon: const Icon(HugeIcons.strokeRoundedEar),
+                    title: const Text('Listen'),
                     activeColor: Colors.white,
                     inactiveColor: Colors.grey),
                 FlashyTabBarItem(
@@ -270,9 +272,14 @@ class _AppBodyState extends State<AppBody> {
                 LyricsPage(
                     key: PageStorageKey('lyricsPage'),
                     controller: _scrollControllers[2]!),
-                VideoPage(
-                    key: PageStorageKey('videoPage'),
-                    controller: _scrollControllers[3]!),
+                BlocProvider(
+                  create: (context) => MusicItemBloc(httpClient: http.Client())
+                    ..add(FetchMusicItem()),
+                  child: MusicVideosPage(
+                    key: const Key('videoPage'),
+                    controller: _scrollControllers[3],
+                  ),
+                ),
                 SettingsPage(key: PageStorageKey('settingsPage')),
               ],
             ),

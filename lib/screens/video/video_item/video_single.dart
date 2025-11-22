@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,148 +122,161 @@ class _VideoSinglePageState extends State<VideoSinglePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
-              size: 25, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.black,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
-      ),
-      body: YoutubePlayerBuilder(
-        onExitFullScreen: () {
-          SystemChrome.setEnabledSystemUIMode(
-            SystemUiMode.manual,
-            overlays: SystemUiOverlay.values,
-          );
-        },
-        player: YoutubePlayer(
-          key: ValueKey(_isFullScreen),
-          width: MediaQuery.of(context).size.width,
-          aspectRatio: _isFullScreen ? 16 / 9 : 1 / 3,
-          controller: _youtubePlayerController,
-          showVideoProgressIndicator: true,
-          actionsPadding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          progressIndicatorColor: kPrimaryColor,
-          progressColors: const ProgressBarColors(
-              playedColor: kPrimaryColor,
+        child: SafeArea(
+          top: false,
+          bottom: true,
+          child: Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
               backgroundColor: Colors.black,
-              bufferedColor: darkThemeColor),
-          bottomActions: const [
-            SizedBox(width: 2.0),
-            CurrentPosition(),
-            SizedBox(width: 5.0),
-            ProgressBar(
-              isExpanded: true,
-              colors: ProgressBarColors(
-                playedColor: kPrimaryColor,
-                handleColor: Colors.white,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(HugeIcons.strokeRoundedCircleArrowLeft02,
+                    size: 25, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
-            RemainingDuration(),
-          ],
-          thumbnail: widget.thumbnail != null
-              ? CachedNetworkImage(
-                  imageUrl: widget.thumbnail,
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) {
-                    return Image.asset(
-                      "assets/images/ignite_icon.jpg",
-                      fit: BoxFit.cover,
-                    );
-                  },
-                )
-              : Image.asset("assets/images/ignite_icon.jpg", fit: BoxFit.cover),
-          onReady: () {
-            _isPlayerReady = true;
-          },
-          // onEnded: (data) {
-          //   _handleVideoCompletion();
-          // },
-        ),
-        builder: (context, player) => GestureDetector(
-          child: Container(
-            color: Colors.black,
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Center(
-                  child: player,
-                ),
-                Positioned(
-                    width: MediaQuery.of(context).size.width,
-                    bottom: getProportionateScreenHeight(35),
-                    left: 0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
+            body: YoutubePlayerBuilder(
+              onExitFullScreen: () {
+                SystemChrome.setEnabledSystemUIMode(
+                  SystemUiMode.manual,
+                  overlays: SystemUiOverlay.values,
+                );
+              },
+              player: YoutubePlayer(
+                key: ValueKey(_isFullScreen),
+                width: MediaQuery.of(context).size.width,
+                aspectRatio: _isFullScreen ? 16 / 9 : 1 / 3,
+                controller: _youtubePlayerController,
+                showVideoProgressIndicator: true,
+                actionsPadding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                progressIndicatorColor: kPrimaryColor,
+                progressColors: const ProgressBarColors(
+                    playedColor: kPrimaryColor,
+                    backgroundColor: Colors.black,
+                    bufferedColor: darkThemeColor),
+                bottomActions: const [
+                  SizedBox(width: 2.0),
+                  CurrentPosition(),
+                  SizedBox(width: 5.0),
+                  ProgressBar(
+                    isExpanded: true,
+                    colors: ProgressBarColors(
+                      playedColor: kPrimaryColor,
+                      handleColor: Colors.white,
+                    ),
+                  ),
+                  RemainingDuration(),
+                ],
+                thumbnail: widget.thumbnail != null
+                    ? CachedNetworkImage(
+                        imageUrl: widget.thumbnail,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) {
+                          return Image.asset(
+                            "assets/images/ignite_icon.jpg",
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset("assets/images/ignite_icon.jpg",
+                        fit: BoxFit.cover),
+                onReady: () {
+                  _isPlayerReady = true;
+                },
+                // onEnded: (data) {
+                //   _handleVideoCompletion();
+                // },
+              ),
+              builder: (context, player) => GestureDetector(
+                child: Container(
+                  color: Colors.black,
+                  height: MediaQuery.of(context).size.height,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: player,
+                      ),
+                      Positioned(
                           width: MediaQuery.of(context).size.width,
-                          padding: const EdgeInsets.all(10),
+                          bottom: getProportionateScreenHeight(35),
+                          left: 0,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                unescape.convert(
-                                    _youtubePlayerController.metadata.title),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: const TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      unescape.convert(_youtubePlayerController
+                                          .metadata.title),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: const TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            getProportionateScreenHeight(5)),
+                                    Text(
+                                      convertDateFormat(widget.date.toString()),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                        fontFamily: 'Manrope',
+                                        fontSize: 12,
+                                        color: Colors.grey.shade500,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(height: getProportionateScreenHeight(5)),
-                              Text(
-                                convertDateFormat(widget.date.toString()),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: TextStyle(
-                                  fontFamily: 'Manrope',
-                                  fontSize: 12,
-                                  color: Colors.grey.shade500,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              )
                             ],
-                          ),
-                        )
-                      ],
-                    )),
-                Positioned(
-                  bottom: getProportionateScreenHeight(170),
-                  right: getProportionateScreenWidth(15),
-                  child: Column(
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          await Share.share(
-                              "${unescape.convert(widget.title)}\n\n"
-                              "${widget.videoURL}");
-                        },
-                        child: const Icon(
-                          HugeIcons.strokeRoundedShare05,
-                          color: Colors.white,
+                          )),
+                      Positioned(
+                        bottom: getProportionateScreenHeight(170),
+                        right: getProportionateScreenWidth(15),
+                        child: Column(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                await Share.share(
+                                    "${unescape.convert(widget.title)}\n\n"
+                                    "${widget.videoURL}");
+                              },
+                              child: const Icon(
+                                HugeIcons.strokeRoundedShare05,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: getProportionateScreenHeight(20)),
+                          ],
                         ),
                       ),
-                      SizedBox(height: getProportionateScreenHeight(20)),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   String reformatDuration(Duration duration) {

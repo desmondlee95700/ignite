@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'event_event.dart';
 
@@ -52,7 +51,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
           status: EventStatus.success,
           events: apiDetails.events,
           hasReachedMax: apiDetails.hasReachedMax,
-          title: apiDetails.title,
           retrying: false,
           errorMsg: null,
         ));
@@ -83,59 +81,57 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      // Check if cached events exist in SharedPreferences
+      // --- Check cached events ---
       final cachedData = prefs.getStringList('saved_events');
-      final cachedTitle = prefs.getString('saved_events_title');
 
-      if (cachedData != null && cachedTitle != null) {
-        print("Firebase event cache");
+      if (cachedData != null) {
+        print("Supabase event cache");
+
         final events = cachedData.map((jsonStr) {
           final Map<String, dynamic> map = jsonDecode(jsonStr);
           return Event.fromJson(map);
         }).toList();
 
-        // Sort events by most recent start_post_date
+        // Sort by year → then by start date
         events.sort((a, b) {
           final dateA = a.start_post_date;
           final dateB = b.start_post_date;
+
           if (dateA == null || dateB == null) return 0;
-          return dateB.compareTo(dateA);
+
+          final yearA = dateA.year;
+          final yearB = dateB.year;
+
+          int result = yearB.compareTo(yearA); // Descending year
+          if (result == 0) {
+            result = dateA.compareTo(dateB); // Ascending date
+          }
+
+          return result;
         });
 
         return EventAPIDetails(
           events: events,
-          title: cachedTitle,
           hasReachedMax: true,
         );
       }
 
-      // --- If no cache exists, fetch from Firestore ---
-      print("Firebase event no cache");
-      final db = FirebaseFirestore.instance;
-      final querySnapshot = await db.collection("event_news").get();
+      // --- No cache → fetch from Supabase ---
+      print("Supabase event no cache");
 
-      final List list = querySnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['data'] ?? [];
-          })
-          .expand((element) => element)
+      final supabase = Supabase.instance.client;
+
+      // Fetch all rows ordered by id
+      final response = await supabase
+          .from('events')
+          .select('*')
+          .order('id', ascending: true);
+
+      final events = (response as List<dynamic>)
+          .map((item) => Event.fromJson(item as Map<String, dynamic>))
           .toList();
 
-      final String title = querySnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['title'] as String?;
-          })
-          .where((t) => t != null)
-          .join(', ');
-
-      final events = list.map((dynamic article) {
-        final map = article as Map<String, dynamic>;
-        return Event.fromJson(map);
-      }).toList();
-
-      // Sort events by year (descending order) and then by start_post_date
+      // Sort events (same as above)
       events.sort((a, b) {
         final dateA = a.start_post_date;
         final dateB = b.start_post_date;
@@ -144,23 +140,20 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
         final yearA = dateA.year;
         final yearB = dateB.year;
-        int result = yearB.compareTo(yearA); // Reversed for descending order
 
-        // If years are the same, sort by date
+        int result = yearB.compareTo(yearA);
         if (result == 0) {
           result = dateA.compareTo(dateB);
         }
         return result;
       });
 
-      // Cache the results in SharedPreferences
+      // Cache results
       final jsonList = events.map((e) => jsonEncode(e.toJson())).toList();
       await prefs.setStringList('saved_events', jsonList);
-      await prefs.setString('saved_events_title', title);
 
       return EventAPIDetails(
         events: events,
-        title: title,
         hasReachedMax: true,
       );
     } catch (error) {
@@ -172,12 +165,10 @@ class EventBloc extends Bloc<EventEvent, EventState> {
 
 class EventAPIDetails {
   final List<Event> events;
-  final String? title;
   final bool hasReachedMax;
 
   EventAPIDetails({
     required this.events,
-    required this.title,
     required this.hasReachedMax,
   });
 }

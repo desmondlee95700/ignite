@@ -41,6 +41,7 @@ class ExploreGridItem extends StatelessWidget {
                       duration: const Duration(milliseconds: 300),
                       reverseDuration: const Duration(milliseconds: 300),
                       isIos: true,
+                      opaque: true,
                       child: VideoSinglePage(
                         videoURL: announcement.url.toString(),
                         title: announcement.title.toString(),

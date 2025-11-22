@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Announcement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'announcement_event.dart';
 
@@ -34,7 +34,7 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
       FetchAnnouncement event, Emitter<AnnouncementState> emit) async {
     if (event.retrying != null && event.retrying!) {
       emit(state.copyWith(
-        errorMsg: "Retrying...",
+        errorMsg: "",
         retrying: true,
         hasReachedMax: false,
         announcements: [],
@@ -52,7 +52,6 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
           status: AnnouncementStatus.success,
           announcements: apiDetails.announcements,
           hasReachedMax: apiDetails.hasReachedMax,
-          title: apiDetails.title,
           retrying: false,
           errorMsg: null,
         ));
@@ -83,17 +82,17 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
     try {
       final prefs = await SharedPreferences.getInstance();
 
+      // --- Load cache ---
       final cachedData = prefs.getStringList('saved_announcements');
-      final cachedTitle = prefs.getString('saved_announcements_title');
 
-      if (cachedData != null && cachedTitle != null) {
-        print("Firebase announcment cache");
+      if (cachedData != null) {
+        print("Supabase announcement cache");
+
         final announcements = cachedData.map((jsonStr) {
-          final Map<String, dynamic> map = jsonDecode(jsonStr);
-          return Announcement.fromJson(map);
+          return Announcement.fromJson(jsonDecode(jsonStr));
         }).toList();
 
-        // Sort by most recent post date
+        // Sort cache by latest post_date
         announcements.sort((a, b) {
           final dateA = a.post_date;
           final dateB = b.post_date;
@@ -103,54 +102,32 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
 
         return AnnnouncementAPIDetails(
           announcements: announcements,
-          title: cachedTitle,
           hasReachedMax: true,
         );
       }
 
-      // --- If no cache exists, fetch from Firestore ---
-      print("Firebase announcment no cache");
-      final db = FirebaseFirestore.instance;
-      final querySnapshot = await db.collection("announcement_news").get();
+      // --- No cache, fetch from Supabase ---
+      print("Supabase announcement no cache");
 
-      final List list = querySnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['data'] ?? [];
-          })
-          .expand((element) => element)
+      final supabase = Supabase.instance.client;
+
+      final response = await supabase
+          .from('announcement')
+          .select()
+          .order('post_date', ascending: false);
+
+      // Convert response → List<Announcement>
+      final announcements = (response as List<dynamic>)
+          .map((row) => Announcement.fromJson(row))
           .toList();
 
-      final String title = querySnapshot.docs
-          .map((doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return data['title'] as String?;
-          })
-          .where((t) => t != null)
-          .join(', ');
-
-      final announcements = list.map((dynamic article) {
-        final map = article as Map<String, dynamic>;
-        return Announcement.fromJson(map);
-      }).toList();
-
-      // Sort announcements by most recent post date
-      announcements.sort((a, b) {
-        final dateA = a.post_date;
-        final dateB = b.post_date;
-        if (dateA == null || dateB == null) return 0;
-        return dateB.compareTo(dateA);
-      });
-
-      // Cache to SharedPreferences
+      // Cache results
       final jsonList =
           announcements.map((a) => jsonEncode(a.toJson())).toList();
       await prefs.setStringList('saved_announcements', jsonList);
-      await prefs.setString('saved_announcements_title', title);
 
       return AnnnouncementAPIDetails(
         announcements: announcements,
-        title: title,
         hasReachedMax: true,
       );
     } catch (error) {
@@ -162,12 +139,10 @@ class AnnouncementBloc extends Bloc<AnnouncementEvent, AnnouncementState> {
 
 class AnnnouncementAPIDetails {
   final List<Announcement> announcements;
-  final String? title;
   final bool hasReachedMax;
 
   AnnnouncementAPIDetails({
     required this.announcements,
-    required this.title,
     required this.hasReachedMax,
   });
 }

@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             return Row(
                               children: [
                                 Text(
-                                  title ?? "Hot Stuff",
+                                  title ?? "Trending Events",
                                   style: const TextStyle(
                                     fontFamily: 'Manrope',
                                     fontSize: 14,
