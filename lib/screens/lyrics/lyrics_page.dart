@@ -51,6 +51,7 @@ class _LyricsPageState extends State<LyricsPage> {
             duration: const Duration(milliseconds: 600),
             reverseDuration: const Duration(milliseconds: 600),
             isIos: true,
+            opaque: true,
             child: PDFViewer(title: title, filePath: url),
           ),
         );

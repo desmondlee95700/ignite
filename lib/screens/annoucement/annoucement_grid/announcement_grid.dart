@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/screens/annoucement/peek_view/peekview_manager.dart';
 import 'package:ignite/screens/video/video_item/video_single.dart';
@@ -155,9 +156,15 @@ class ExploreGridItem extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    HugeIcons.strokeRoundedNews01,
-                    color: Colors.white,
+                  Icon(
+                    announcement.type == "video_link"
+                        ? HugeIcons.strokeRoundedVideo01
+                        : announcement.type == "youtube"
+                            ? HugeIcons.strokeRoundedYoutube
+                            : HugeIcons.strokeRoundedNews01,
+                    color: announcement.type == "youtube"
+                        ? kPrimaryColor
+                        : Colors.white,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
@@ -167,6 +174,7 @@ class ExploreGridItem extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
+                        fontWeight: FontWeight.bold,
                         overflow: TextOverflow.ellipsis,
                         fontFamily: "Manrope",
                       ),

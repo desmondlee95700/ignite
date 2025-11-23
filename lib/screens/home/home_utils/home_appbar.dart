@@ -55,7 +55,7 @@ class SilverAppHomeBar extends SliverPersistentHeaderDelegate {
                 width:
                     MediaQuery.of(context).size.width - 20, // to avoid overflow
                 child: Marquee(
-                  text: '🔥 A movement to see generations encounter Jesus | 📲 Follow us @ignitefcc',
+                  text: '🔥 A movement to see generations encounter Jesus',
                   style: const TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,

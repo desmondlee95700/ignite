@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -66,105 +67,113 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: true,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: darkThemeColor,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              HugeIcons.strokeRoundedArrowLeft02,
-              size: 30,
-              color: kPrimaryColor,
-            ),
-          ),
-          title: Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              widget.title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: darkThemeColor,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: darkThemeColor,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                HugeIcons.strokeRoundedArrowLeft02,
+                size: 30,
+                color: kPrimaryColor,
               ),
             ),
-          ),
-          centerTitle: true,
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                Expanded(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      InteractiveViewer(
-                          panEnabled: true,
-                          minScale: 1,
-                          maxScale: 4,
-                          child: PDF(
-                            swipeHorizontal: true,
-                            enableSwipe: false,
-                            autoSpacing: true,
-                            defaultPage: 0,
-                            fitPolicy: FitPolicy.BOTH,
-                            fitEachPage: true,
-                            preventLinkNavigation: false,
-                            backgroundColor: Colors.black,
-                            nightMode: true,
-                            onRender: (pages) {
-                              setState(() {
-                                isReady = true;
-                                totalPages = pages;
-                              });
-                            },
-                          ).cachedFromUrl(widget.filePath)),
-                      if (!isReady)
-                        Center(
-                          child: LoadingAnimationWidget.inkDrop(
-                              color: kPrimaryColor, size: 50),
-                        ),
-                      if (errorMessage.isNotEmpty)
-                        Center(
-                          child: Text(errorMessage,
-                              style: const TextStyle(color: Colors.red)),
-                        ),
-                    ],
-                  ),
+            title: Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                _buildPageNavigation(),
-              ],
+              ),
             ),
+            centerTitle: true,
+          ),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        InteractiveViewer(
+                            panEnabled: true,
+                            minScale: 1,
+                            maxScale: 4,
+                            child: PDF(
+                              swipeHorizontal: true,
+                              enableSwipe: false,
+                              autoSpacing: true,
+                              defaultPage: 0,
+                              fitPolicy: FitPolicy.BOTH,
+                              fitEachPage: true,
+                              preventLinkNavigation: false,
+                              backgroundColor: Colors.black,
+                              nightMode: true,
+                              onRender: (pages) {
+                                setState(() {
+                                  isReady = true;
+                                  totalPages = pages;
+                                });
+                              },
+                            ).cachedFromUrl(widget.filePath)),
+                        if (!isReady)
+                          Center(
+                            child: LoadingAnimationWidget.inkDrop(
+                                color: kPrimaryColor, size: 50),
+                          ),
+                        if (errorMessage.isNotEmpty)
+                          Center(
+                            child: Text(errorMessage,
+                                style: const TextStyle(color: Colors.red)),
+                          ),
+                      ],
+                    ),
+                  ),
+                  _buildPageNavigation(),
+                ],
+              ),
 
-            // Page Selector Overlay (Ensures it's on top)
-            if (showPageSelector)
-              Positioned(
-                bottom: 70,
-                left: 0,
-                right: 0,
-                child: SafeArea(
-                  child: BlocBuilder<PdfThumbnailsCubit, PdfThumbnailsState>(
-                    builder: (context, state) {
-                      if (state is PdfThumbnailsLoading) {
-                        return _buildShimmerEffect();
-                      } else if (state is PdfThumbnailsLoaded) {
-                        return _buildThumbnailSelector(state.thumbnails);
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
+              // Page Selector Overlay (Ensures it's on top)
+              if (showPageSelector)
+                Positioned(
+                  bottom: 70,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    child: BlocBuilder<PdfThumbnailsCubit, PdfThumbnailsState>(
+                      builder: (context, state) {
+                        if (state is PdfThumbnailsLoading) {
+                          return _buildShimmerEffect();
+                        } else if (state is PdfThumbnailsLoaded) {
+                          return _buildThumbnailSelector(state.thumbnails);
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

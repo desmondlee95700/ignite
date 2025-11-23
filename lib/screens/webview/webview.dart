@@ -44,33 +44,37 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Image.asset(
-          "assets/images/ignite_icon.jpg",
-          height: 80,
-          width: 80,
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            HugeIcons.strokeRoundedArrowLeft02,
-            color: Colors.white,
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Image.asset(
+            "assets/images/ignite_icon.jpg",
+            height: 80,
+            width: 80,
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Stack(
-        children: [
-          WebViewWidget(controller: _controller),
-          if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(
+              HugeIcons.strokeRoundedArrowLeft02,
+              color: Colors.white,
             ),
-        ],
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: Stack(
+          children: [
+            WebViewWidget(controller: _controller),
+            if (_isLoading)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
       ),
     );
   }

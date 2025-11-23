@@ -79,7 +79,8 @@ class AnnouncementPeekView extends StatelessWidget {
                   right: 10,
                   child: InkWell(
                     onTap: () async {
-                      await Share.share(announcement.title!);
+                      await Share.share(
+                          '${announcement.title}\n\n${announcement.url}');
                     },
                     child: Container(
                       decoration: BoxDecoration(
