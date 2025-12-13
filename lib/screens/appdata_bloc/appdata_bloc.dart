@@ -9,7 +9,6 @@ import 'package:ignite/model/Announcement.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/model/Lyrics.dart';
 import 'package:ignite/model/MusicItem.dart';
-import 'package:ignite/model/Video.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

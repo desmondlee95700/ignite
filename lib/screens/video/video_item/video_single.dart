@@ -94,7 +94,7 @@ class _VideoSinglePageState extends State<VideoSinglePage> {
 
       _idController = TextEditingController();
       _videoMetaData = const YoutubeMetaData();
-    } catch (e, stackTrace) {
+    } catch (e) {
       print("YoutubeController $e");
     }
   }
@@ -177,8 +177,7 @@ class _VideoSinglePageState extends State<VideoSinglePage> {
                   ),
                   RemainingDuration(),
                 ],
-                thumbnail: widget.thumbnail != null
-                    ? CachedNetworkImage(
+                thumbnail: CachedNetworkImage(
                         imageUrl: widget.thumbnail,
                         fit: BoxFit.cover,
                         errorWidget: (context, url, error) {
@@ -187,9 +186,7 @@ class _VideoSinglePageState extends State<VideoSinglePage> {
                             fit: BoxFit.cover,
                           );
                         },
-                      )
-                    : Image.asset("assets/images/ignite_icon.jpg",
-                        fit: BoxFit.cover),
+                      ),
                 onReady: () {
                   _isPlayerReady = true;
                 },

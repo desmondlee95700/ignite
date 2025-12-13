@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/size_config.dart';
@@ -11,11 +10,12 @@ import 'package:ignite/screens/annoucement/annoucement_bloc/announcement_bloc.da
 import 'package:ignite/screens/event/event_bloc/event_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:ignite/screens/settings/settings.dart';
 
 class HomePage extends StatefulWidget {
   final ScrollController controller;
 
-  const HomePage({Key? key, required this.controller}) : super(key: key);
+  const HomePage({super.key, required this.controller});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -204,6 +204,22 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
+            ),
+          ),
+
+          // Settings Icon (Top Right)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            right: 24,
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                );
+              },
+              icon: const Icon(HugeIcons.strokeRoundedSettings03,
+                  color: Colors.white, size: 24),
             ),
           ),
         ],
@@ -405,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: Container(
                         height: 56, // Accessible height
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                         ),
                         child: const Center(
@@ -660,79 +676,71 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const Divider(color: Colors.white, height: 1),
-              ...events
-                  .map((e) => Column(
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.all(isSmallScreen ? 20.0 : 24.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Date Box
-                                Container(
-                                  width: 50,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          e.start_post_date?.day.toString() ??
-                                              '',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 24)),
-                                      Text(
-                                          _getMonth(e.start_post_date)
-                                              .toUpperCase(),
-                                          style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12)),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        e.title?.toUpperCase() ?? '',
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                            letterSpacing: 0.5),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.access_time,
-                                              size: 12, color: Colors.grey),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            e.start_post_date != null
-                                                ? _getTime(e.start_post_date!)
-                                                : 'TBA',
-                                            style: const TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+              ...events.map((e) => Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(isSmallScreen ? 20.0 : 24.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Date Box
+                            SizedBox(
+                              width: 50,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(e.start_post_date?.day.toString() ?? '',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 24)),
+                                  Text(
+                                      _getMonth(e.start_post_date)
+                                          .toUpperCase(),
+                                      style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12)),
+                                ],
+                              ),
                             ),
-                          ),
-                          const Divider(color: Colors.white24, height: 1),
-                        ],
-                      ))
-                  .toList(),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    e.title?.toUpperCase() ?? '',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        letterSpacing: 0.5),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.access_time,
+                                          size: 12, color: Colors.grey),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        e.start_post_date != null
+                                            ? _getTime(e.start_post_date!)
+                                            : 'TBA',
+                                        style: const TextStyle(
+                                            color: Colors.grey, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(color: Colors.white24, height: 1),
+                    ],
+                  )),
               InkWell(
                 onTap: () {},
                 child: Padding(

@@ -8,7 +8,7 @@ sealed class AppDataEvent extends Equatable {
 }
 
 final class FetchAndCacheAppData extends AppDataEvent {
-  FetchAndCacheAppData({
+  const FetchAndCacheAppData({
     this.retrying,
   });
 

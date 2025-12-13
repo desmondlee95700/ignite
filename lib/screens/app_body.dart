@@ -1,4 +1,3 @@
-import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +17,8 @@ import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:ignite/screens/settings/settings.dart';
 import 'package:ignite/screens/video/musicitem_bloc/musicitem_bloc.dart';
 import 'package:ignite/screens/video/video.dart';
+import 'package:ignite/screens/event/home_event.dart';
+import 'package:ignite/screens/event/event_bloc/event_bloc.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class AppBody extends StatefulWidget {
@@ -47,6 +48,7 @@ class _AppBodyState extends State<AppBody> {
     1: ScrollController(),
     2: ScrollController(),
     3: ScrollController(),
+    4: ScrollController(),
   };
 
   // Variable to track the last tap time for navigation items
@@ -57,7 +59,8 @@ class _AppBodyState extends State<AppBody> {
         AnnoucementPage(controller: _scrollControllers[1]!),
         LyricsPage(controller: _scrollControllers[2]!),
         MusicVideosPage(controller: _scrollControllers[3]!),
-        const SettingsPage(),
+        MusicVideosPage(controller: _scrollControllers[3]!),
+        EventsPage(controller: _scrollControllers[4]!),
       ];
 
   @override
@@ -75,10 +78,10 @@ class _AppBodyState extends State<AppBody> {
   }
 
   void pipPlayer(BuildContext context, Video video) {
-    late YoutubePlayerController _youtubePlayerController;
+    late YoutubePlayerController youtubePlayerController;
 
     try {
-      _youtubePlayerController = YoutubePlayerController(
+      youtubePlayerController = YoutubePlayerController(
         initialVideoId: video.video_id,
         flags: const YoutubePlayerFlags(
           mute: false,
@@ -134,7 +137,7 @@ class _AppBodyState extends State<AppBody> {
                       Container(
                         color: Colors.black,
                         child: YoutubePlayer(
-                          controller: _youtubePlayerController,
+                          controller: youtubePlayerController,
                           showVideoProgressIndicator: true,
                           actionsPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
@@ -206,71 +209,101 @@ class _AppBodyState extends State<AppBody> {
           ),
           child: Scaffold(
             extendBody: true,
-            bottomNavigationBar: FlashyTabBar(
-              animationCurve: Curves.linear,
-              selectedIndex: _currentPage,
-              showElevation: false,
-              backgroundColor: darkThemeColor,
-              onItemSelected: (index) {
-                final now = DateTime.now();
-                if (_currentPage == index) {
-                  if (_lastTapTime == null ||
-                      now.difference(_lastTapTime!) >
-                          const Duration(milliseconds: 300)) {
-                    _lastTapTime = now;
+            bottomNavigationBar: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+              ),
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Colors.black,
+                elevation: 0,
+                selectedItemColor: kPrimaryColor, // Updated to primary color
+                unselectedItemColor: Colors.grey[800],
+                showUnselectedLabels: true,
+                selectedLabelStyle: const TextStyle(
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.w900,
+                  fontSize: 10,
+                  letterSpacing: 1.0,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  letterSpacing: 0.5,
+                ),
+                currentIndex: _currentPage,
+                onTap: (index) {
+                  final now = DateTime.now();
+                  if (_currentPage == index) {
+                    if (_lastTapTime == null ||
+                        now.difference(_lastTapTime!) >
+                            const Duration(milliseconds: 300)) {
+                      _lastTapTime = now;
+                    } else {
+                      _scrollControllers[index]?.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                      _lastTapTime = null;
+                    }
                   } else {
-                    _scrollControllers[index]?.animateTo(
-                      0,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOut,
-                    );
-                    _lastTapTime = null;
+                    setState(() => _currentPage = index);
+                    _pageController.jumpToPage(index);
                   }
-                } else {
-                  setState(() => _currentPage = index);
-                  _pageController.jumpToPage(index);
-                }
-              },
-              items: [
-                FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedFire),
-                    title: const Text('Ignite'),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey),
-                FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedMegaphone02),
-                    title: const Text('News'),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey),
-                FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedFileMusic),
-                    title: const Text('Lyrics'),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey),
-                FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedMusicNote02),
-                    title: const Text('Listen'),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey),
-                FlashyTabBarItem(
-                    icon: const Icon(HugeIcons.strokeRoundedSettings03),
-                    title: const Text('Setting'),
-                    activeColor: Colors.white,
-                    inactiveColor: Colors.grey),
-              ],
+                },
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Icon(HugeIcons.strokeRoundedFire),
+                    ),
+                    label: 'IGNITE',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Icon(HugeIcons.strokeRoundedMegaphone02),
+                    ),
+                    label: 'NEWS',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Icon(HugeIcons.strokeRoundedFileMusic),
+                    ),
+                    label: 'LYRICS',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Icon(HugeIcons.strokeRoundedMusicNote02),
+                    ),
+                    label: 'LISTEN',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(bottom: 4),
+                      child: Icon(HugeIcons.strokeRoundedCalendar03),
+                    ),
+                    label: 'EVENTS',
+                  ),
+                ],
+              ),
             ),
             body: PageView(
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 HomePage(
-                    key: PageStorageKey('homePage'),
+                    key: const PageStorageKey('homePage'),
                     controller: _scrollControllers[0]!),
                 AnnoucementPage(
-                    key: PageStorageKey('announcementPage'),
+                    key: const PageStorageKey('announcementPage'),
                     controller: _scrollControllers[1]!),
                 LyricsPage(
-                    key: PageStorageKey('lyricsPage'),
+                    key: const PageStorageKey('lyricsPage'),
                     controller: _scrollControllers[2]!),
                 BlocProvider(
                   create: (context) => MusicItemBloc(httpClient: http.Client())
@@ -280,7 +313,13 @@ class _AppBodyState extends State<AppBody> {
                     controller: _scrollControllers[3],
                   ),
                 ),
-                SettingsPage(key: PageStorageKey('settingsPage')),
+                BlocProvider(
+                  create: (context) =>
+                      EventBloc(httpClient: http.Client())..add(FetchEvent()),
+                  child: EventsPage(
+                      key: const PageStorageKey('eventsPage'),
+                      controller: _scrollControllers[4]!),
+                ),
               ],
             ),
           ),

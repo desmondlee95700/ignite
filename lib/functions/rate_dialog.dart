@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:store_redirect/store_redirect.dart';
 
 class RateAppDialog extends StatelessWidget {
+  const RateAppDialog({super.key});
+
 
   @override
   Widget build(BuildContext context) {

@@ -114,7 +114,7 @@ class VideoItem extends StatelessWidget {
               ),
               child: const Row(
                 children: [
-                  const Icon(
+                  Icon(
                     HugeIcons.strokeRoundedPlay,
                     color: Colors.white,
                     size: 20,

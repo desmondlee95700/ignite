@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class SizeConfig {
   static late MediaQueryData _mediaQueryData;
-  static late double screenWidth = 375;
-  static late double screenHeight = 812;
+  static double screenWidth = 375;
+  static double screenHeight = 812;
   static double? defaultSize;
   static Orientation? orientation;
 

@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen>
     FlutterNativeSplash.remove();
 
     _appDataBloc = context.read<AppDataBloc>();
-    _appDataBloc.add(FetchAndCacheAppData());
+    _appDataBloc.add(const FetchAndCacheAppData());
 
     // Listen for the state and navigate when loaded
     _listenAndNavigate();
@@ -51,10 +51,6 @@ class _SplashScreenState extends State<SplashScreen>
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

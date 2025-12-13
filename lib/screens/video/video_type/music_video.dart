@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -6,7 +5,6 @@ import 'package:ignite/functions/constant.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:ignite/screens/video/video_bloc/video_bloc.dart';
 import 'package:ignite/screens/video/video_item/video_item.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:http/http.dart' as http;
 import 'package:visibility_detector/visibility_detector.dart';
@@ -14,7 +12,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 class MusicVideoPage extends StatefulWidget {
   final ScrollController controller;
 
-  const MusicVideoPage({Key? key, required this.controller}) : super(key: key);
+  const MusicVideoPage({super.key, required this.controller});
 
   @override
   _MusicVideoPageState createState() => _MusicVideoPageState();
@@ -54,7 +52,7 @@ class _MusicVideoPageState extends State<MusicVideoPage>
         ),
         title: const Row(
           children: [
-            const Text(
+            Text(
               " | Music Videos",
               style: TextStyle(
                 color: kPrimaryColor,

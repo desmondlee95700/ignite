@@ -1,221 +1,273 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:html_unescape/html_unescape.dart';
-import 'package:ignite/functions/datetime_helper.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/model/Event.dart';
 import 'package:ignite/screens/event/event_details.dart';
 import 'package:intl/intl.dart';
-import 'package:page_transition/page_transition.dart';
 
 class HomeEventItem extends StatelessWidget {
+  final Event event;
+
   const HomeEventItem({
     super.key,
-    required this.events,
+    required this.event,
   });
 
-  final Event events;
+  Map<String, dynamic> _getEventStatus() {
+    final now = DateTime.now();
+    final start = event.start_post_date ?? DateTime(0);
+    final end = event.end_post_date ?? DateTime(0);
+
+    if (now.isAfter(end)) {
+      return {
+        'label': 'Ended',
+        'color': Colors.grey[600],
+        'textColor': Colors.grey[200]
+      };
+    }
+    if (now.isAfter(start) && now.isBefore(end)) {
+      return {
+        'label': 'Happening Now',
+        'color': const Color(0xFF22C55E), // green-500
+        'textColor': Colors.white
+      };
+    }
+    return {
+      'label': 'Upcoming',
+      'color': const Color(0xFF2563EB), // blue-600
+      'textColor': Colors.white
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    var unescape = HtmlUnescape();
-    return InkWell(
+    final status = _getEventStatus();
+    final startDate = event.start_post_date ?? DateTime.now();
+    final day = startDate.day.toString();
+    final month = DateFormat('MMM').format(startDate);
+
+    return GestureDetector(
       onTap: () {
         Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.rightToLeft,
-            duration: const Duration(milliseconds: 600),
-            reverseDuration: const Duration(milliseconds: 600),
-            isIos: true,
-            child: EventDetailsPage(events: events),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => EventDetailsPage(events: event)));
       },
       child: Container(
-        width: 150,
-        margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.grey[900]!.withOpacity(0.4),
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
+        clipBehavior: Clip.antiAlias,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Stack for Image and Date Circle
+            // Image Container
             Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.bottomCenter,
               children: [
-                // Image
-                ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+                AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: CachedNetworkImage(
+                    imageUrl: event.image ?? '',
+                    fit: BoxFit.cover,
+                    errorWidget: (context, url, error) => Container(
+                        color: Colors.grey[800],
+                        child: const Icon(Icons.error)),
                   ),
-                  child: events.image != null
-                      ? CachedNetworkImage(
-                          imageUrl: events.image!,
-                          imageBuilder: (context, imageProvider) => Container(
-                            height: 200,
-                            width: 150,
-                            decoration: BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.circular(16),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          placeholder: (context, url) {
-                            return Container(
-                              height: 200,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Container(
-                              height: 200,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(16),
-                                image: const DecorationImage(
-                                  image: AssetImage(
-                                    "assets/images/ignite_icon.jpg",
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          },
-                        )
-                      : Container(
-                          height: 200,
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(16),
-                            image: const DecorationImage(
-                              image: AssetImage(
-                                "assets/images/ignite_icon.jpg",
-                              ),
-                              fit: BoxFit.cover,
-                            ),
+                ),
+                // Gradient Overlay
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.grey[900]!.withOpacity(0.8),
+                          Colors.transparent,
+                        ],
+                        stops: const [0, 0.4],
+                      ),
+                    ),
+                  ),
+                ),
+                // Date Badge
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    constraints: const BoxConstraints(minWidth: 60),
+                    child: Column(
+                      children: [
+                        Text(
+                          month.toUpperCase(),
+                          style: const TextStyle(
+                            color: Color(0xFFEF4444), // red-500
+                            fontFamily: 'Manrope',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
                           ),
                         ),
-                ),
-                // Date Circle
-                Positioned(
-                  bottom: -25, // Moves the circle down outside the image
-                  child: Container(
-                    height: 60,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.rectangle,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(8.0)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 5,
+                        Text(
+                          day,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Manrope',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            height: 1.0,
+                          ),
                         ),
                       ],
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          getMonthShort(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!,
-                          )), // Month abbreviation
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontFamily: 'Manrope',
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Text(
-                          "${getDay(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!,
-                          ))} - ${getDay(DateFormat('yyyy-MM-dd').format(
-                            events.end_post_date!,
-                          ))}",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Manrope',
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          getYearFromDateString(DateFormat('yyyy-MM-dd').format(
-                            events.start_post_date!,
-                          )).toString(), // Month abbreviation
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontFamily: 'Manrope',
-                            color: Colors.grey,
-                          ),
+                  ),
+                ),
+                // Status Badge
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: status['color'],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
                       ],
+                    ),
+                    child: Text(
+                      status['label'],
+                      style: TextStyle(
+                        color: status['textColor'],
+                        fontFamily: 'Manrope',
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 30), // Space for the date circle
-            // Title
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                unescape.convert(events.title!),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Manrope',
-                  color: Colors.black,
+            // Content
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      event.title ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Manrope',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Info Rows
+                    Column(
+                      children: [
+                        _buildInfoRow(
+                          HugeIcons.strokeRoundedClock01,
+                          DateFormat('EEEE, MMMM d, y').format(startDate),
+                        ),
+                        const SizedBox(height: 10),
+                        if (event.location != null) ...[
+                          _buildInfoRow(
+                            HugeIcons.strokeRoundedLocation01,
+                            event.location!,
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                        _buildInfoRow(
+                          HugeIcons.strokeRoundedTicket01,
+                          (event.price == null || event.price == 0)
+                              ? 'Free Entry'
+                              : 'RM ${event.price!.toStringAsFixed(2)}',
+                          highlight: (event.price == null || event.price == 0),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    // Footer
+                    Container(
+                      padding: const EdgeInsets.only(top: 16),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top:
+                              BorderSide(color: Colors.white.withOpacity(0.05)),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "View Details",
+                            style: TextStyle(
+                              color: Colors.grey[500],
+                              fontFamily: 'Manrope',
+                              fontSize: 14,
+                            ),
+                          ),
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.arrow_forward,
+                                color: Colors.white, size: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 5),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                DateTime.now().isAfter(events.start_post_date!)
-                    ? "ENDED"
-                    : getTimeFromDateTime(events.start_post_date!).toString(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Manrope',
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text, {bool highlight = false}) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.red.withOpacity(0.7), size: 16),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: highlight ? Colors.green[400] : Colors.grey[400],
+              fontFamily: 'Manrope',
+              fontSize: 14,
+              fontWeight: highlight ? FontWeight.w500 : FontWeight.normal,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

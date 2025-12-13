@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/datetime_helper.dart';
 import 'package:ignite/functions/size_config.dart';
-import 'package:ignite/main.dart';
 import 'package:ignite/model/Video.dart';
 import 'package:ignite/screens/pip_bloc/pip_bloc.dart';
 import 'package:share_plus/share_plus.dart';
@@ -91,7 +89,7 @@ class _VideoFullscreenItemState extends State<VideoFullscreenItem> {
 
       _idController = TextEditingController();
       _videoMetaData = const YoutubeMetaData();
-    } catch (e, stackTrace) {
+    } catch (e) {
       print("YoutubeController $e");
     }
   }

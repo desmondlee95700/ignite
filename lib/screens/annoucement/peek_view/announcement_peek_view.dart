@@ -8,8 +8,7 @@ import 'package:share_plus/share_plus.dart';
 class AnnouncementPeekView extends StatelessWidget {
   final Announcement announcement;
 
-  const AnnouncementPeekView({Key? key, required this.announcement})
-      : super(key: key);
+  const AnnouncementPeekView({super.key, required this.announcement});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class AnnouncementPeekView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            SizedBox(
               height: 60, // Header container
               child: Row(
                 children: [
@@ -62,7 +61,7 @@ class AnnouncementPeekView extends StatelessWidget {
             Stack(
               children: [
                 // The image in the background
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: CachedNetworkImage(
                     imageUrl: announcement.image!,
@@ -105,7 +104,7 @@ class AnnouncementPeekView extends StatelessWidget {
               //height: 80,
               decoration: const BoxDecoration(
                 color: darkThemeColor,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15),
                 ),

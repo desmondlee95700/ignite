@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:ignite/model/Video.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -216,7 +215,7 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
         nextKey: nextKey,
         hasReachedMax: hasReachedMax,
       );
-    } catch (error, st) {
+    } catch (error) {
       print("Video bloc $error");
       return "Temporarily unable to load Ignite Content due to technical difficulties, please try again later...";
     }

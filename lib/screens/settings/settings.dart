@@ -1,14 +1,7 @@
-import 'dart:io';
-
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:ignite/functions/constant.dart';
 import 'package:ignite/functions/rate_dialog.dart';
-import 'package:ignite/functions/size_config.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -44,269 +37,185 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // leading: IconButton(
-        //   icon: const Icon(HugeIcons.strokeRoundedArrowLeft02,
-        //       size: 30), // Your custom icon here
-        //   onPressed: () {
-        //     Navigator.pop(context); // Pop the current screen
-        //   },
-        // ),
-        title: const Row(
-          children: [
-            Text(
-              " | Settings",
-              style: TextStyle(
-                color: kPrimaryColor,
-                fontFamily: 'Manrope',
-                fontSize: 18,
+      backgroundColor: Colors.black,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            backgroundColor: Colors.black,
+            surfaceTintColor: Colors.black,
+            expandedHeight: 80.0,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
+              title: const Text(
+                "SETTINGS",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.w900,
+                  fontSize: 24,
+                  letterSpacing: 2.0,
+                ),
+              ),
+              background: Container(color: Colors.black),
+            ),
+            leading: IconButton(
+              icon: const Icon(HugeIcons.strokeRoundedArrowLeft01,
+                  color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  _buildSectionHeader("INFO"),
+                  _buildSettingsItem(
+                    "INQUIRIES",
+                    HugeIcons.strokeRoundedMessage01,
+                    () async {
+                      // await launchUrl(...)
+                    },
+                  ),
+                  const SizedBox(height: 40),
+                  _buildSectionHeader("APP"),
+                  _buildSettingsItem(
+                    "RATE APP",
+                    HugeIcons.strokeRoundedStar,
+                    () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const RateAppDialog();
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 60),
+                  const Text(
+                    "CONNECT WITH US",
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: [
+                      _socialIcon(HugeIcons.strokeRoundedFacebook01,
+                          'https://www.facebook.com/158038221526991'),
+                      _socialIcon(HugeIcons.strokeRoundedInstagram,
+                          'https://www.instagram.com/ignite.fcc'),
+                      _socialIcon(HugeIcons.strokeRoundedYoutube,
+                          'https://www.youtube.com/@IgniteFCC'),
+                      _socialIcon(HugeIcons.strokeRoundedTiktok,
+                          'https://www.tiktok.com/@ignite.fcc'),
+                      _socialIcon(HugeIcons.strokeRoundedSpotify,
+                          'https://open.spotify.com/artist/0Cu1fBBJm6Rgmw0tQfrqsZ'),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Text(
+                    "A conference driven by passion to see people ignited through an encounter with God.",
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Version $buildNumber",
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 14,
+          fontFamily: 'Manrope',
+          color: Colors.white,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 2.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsItem(String title, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.white, width: 1)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontFamily: 'Manrope',
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ),
+            const Icon(HugeIcons.strokeRoundedArrowRight01,
+                color: Colors.white, size: 20),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          // ListTile(
-          //   leading: Icon(
-          //     AdaptiveTheme.of(context).theme ==
-          //             AdaptiveTheme.of(context).darkTheme
-          //         ? HugeIcons.strokeRoundedMoon02
-          //         : HugeIcons.strokeRoundedSun03,
-          //   ),
-          //   title: const Text("Theme", style: TextStyle(fontSize: 16)),
-          //   trailing: Switch.adaptive(
-          //     activeColor: kPrimaryColor,
-          //     value: AdaptiveTheme.of(context).theme ==
-          //         AdaptiveTheme.of(context).darkTheme,
-          //     onChanged: (value) {
-          //       if (value) {
-          //         AdaptiveTheme.of(context).setDark();
-          //       } else {
-          //         AdaptiveTheme.of(context).setLight();
-          //       }
-          //     },
-          //   ),
-          // ),
-          // const SizedBox(height: 30),
-          const Align(
-            alignment: Alignment.centerLeft, // Align to the left
-            child: const Padding(
-              padding:
-                  EdgeInsets.only(left: 16), // Optional padding for spacing
-              child: Text("Info",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Manrope',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(
-              HugeIcons.strokeRoundedMessage01,
-              color: Colors.white,
-            ),
-            title: const Text("Inquiries",
-                style: TextStyle(fontSize: 16, color: Colors.white)),
-            onTap: () async {
-              // await launchUrl(
-              //     Uri.parse(
-              //         "https://www.google.com"),
-              //     mode: LaunchMode.inAppBrowserView);
-            },
-          ),
-          const SizedBox(height: 30),
-          const Align(
-            alignment: Alignment.centerLeft, // Align to the left
-            child: const Padding(
-              padding:
-                  EdgeInsets.only(left: 16), // Optional padding for spacing
-              child: Text("App",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontFamily: 'Manrope',
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(
-              HugeIcons.strokeRoundedStar,
-              color: Colors.white,
-            ),
-            title: const Text("Rate App",
-                style: TextStyle(fontSize: 16, color: Colors.white)),
-            onTap: () async {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return RateAppDialog(); // Show rate app dialog
-                },
-              );
-            },
-          ),
-          //const Spacer(),
-          const SizedBox(height: 250),
-          Container(
-            margin: EdgeInsets.symmetric(
-              vertical: getProportionateScreenHeight(15),
-              horizontal: getProportionateScreenWidth(15),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height: getProportionateScreenHeight(10)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        String fbProtocolURL;
-                        if (Platform.isIOS) {
-                          fbProtocolURL = 'fb://profile/158038221526991';
-                        } else {
-                          fbProtocolURL = 'fb://page/158038221526991';
-                        }
-                        String fallbackUrl =
-                            'https://www.facebook.com/158038221526991';
-                        try {
-                          Uri fbUri = Uri.parse(fbProtocolURL);
-                          var canLaunchNatively = await canLaunchUrl(fbUri);
-                          if (canLaunchNatively) {
-                            launchUrl(fbUri);
-                          } else {
-                            await launchUrl(Uri.parse(fallbackUrl),
-                                mode: LaunchMode.inAppBrowserView);
-                          }
-                        } catch (e, st) {
-                          // Handle this as you prefer
-                        }
-                      },
-                      child: const Icon(HugeIcons.strokeRoundedFacebook01,
-                          color: Colors.blue, size: 30),
-                    ),
-                    SizedBox(width: getProportionateScreenWidth(20)),
-                    InkWell(
-                      onTap: () async {
-                        String instaProtocolURL =
-                            'https://www.instagram.com/ignite.fcc';
-                        try {
-                          Uri instaUri = Uri.parse(instaProtocolURL);
-                          var canLaunchNatively = await canLaunchUrl(instaUri);
-                          if (canLaunchNatively) {
-                            launchUrl(instaUri);
-                          } else {
-                            await launchUrl(Uri.parse(instaProtocolURL),
-                                mode: LaunchMode.inAppBrowserView);
-                          }
-                        } catch (e, st) {
-                          // Handle this as you prefer
-                        }
-                      },
-                      child: const Icon(HugeIcons.strokeRoundedInstagram,
-                          color: Colors.pink, size: 30),
-                    ),
-                    SizedBox(width: getProportionateScreenWidth(20)),
-                    InkWell(
-                      onTap: () async {
-                        String youtubeProtocolURL;
-                        if (Platform.isIOS) {
-                          youtubeProtocolURL =
-                              'youtube://www.youtube.com/@IgniteFCC';
-                        } else {
-                          youtubeProtocolURL =
-                              'https://www.youtube.com/@IgniteFCC';
-                        }
-                        String fallbackUrl =
-                            'https://www.youtube.com/@IgniteFCC';
-                        try {
-                          Uri youtubeUri = Uri.parse(youtubeProtocolURL);
-                          var canLaunchNatively =
-                              await canLaunchUrl(youtubeUri);
-                          if (canLaunchNatively) {
-                            launchUrl(youtubeUri);
-                          } else {
-                            await launchUrl(Uri.parse(fallbackUrl),
-                                mode: LaunchMode.inAppBrowserView);
-                          }
-                        } catch (e, st) {
-                          // Handle this as you prefer
-                        }
-                      },
-                      child: const Icon(HugeIcons.strokeRoundedYoutube,
-                          color: Colors.red, size: 30),
-                    ),
-                    SizedBox(width: getProportionateScreenWidth(20)),
-                    InkWell(
-                      onTap: () async {
-                        String tiktokProtocolURL =
-                            'https://www.tiktok.com/@ignite.fcc';
-                        try {
-                          Uri tiktokUri = Uri.parse(tiktokProtocolURL);
-                          var canLaunchNatively = await canLaunchUrl(tiktokUri);
-                          if (canLaunchNatively) {
-                            launchUrl(tiktokUri);
-                          } else {
-                            await launchUrl(Uri.parse(tiktokProtocolURL),
-                                mode: LaunchMode.inAppBrowserView);
-                          }
-                        } catch (e, st) {
-                          // Handle this as you prefer
-                        }
-                      },
-                      child: const Icon(HugeIcons.strokeRoundedTiktok,
-                          color: Colors.white, size: 30),
-                    ),
-                    SizedBox(width: getProportionateScreenWidth(20)),
-                    InkWell(
-                      onTap: () async {
-                        String spotifyProtocolURL =
-                            'https://open.spotify.com/artist/0Cu1fBBJm6Rgmw0tQfrqsZ';
-                        try {
-                          Uri spotifyUri = Uri.parse(spotifyProtocolURL);
-                          var canLaunchNatively =
-                              await canLaunchUrl(spotifyUri);
-                          if (canLaunchNatively) {
-                            launchUrl(spotifyUri);
-                          } else {
-                            await launchUrl(Uri.parse(spotifyProtocolURL),
-                                mode: LaunchMode.inAppBrowserView);
-                          }
-                        } catch (e, st) {}
-                      },
-                      child: const Icon(HugeIcons.strokeRoundedSpotify,
-                          color: Colors.green, size: 30),
-                    ),
-                  ],
-                ),
-                SizedBox(height: getProportionateScreenHeight(10)),
-                Text(
-                  "A conference that driven by passionate to see people be ignited through the encounter with God.",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AdaptiveTheme.of(context).theme ==
-                            AdaptiveTheme.of(context).darkTheme
-                        ? Colors.white70
-                        : Colors.grey.shade600,
-                  ),
-                ),
-                SizedBox(height: getProportionateScreenHeight(10)),
-                Text(
-                  "Version $buildNumber",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AdaptiveTheme.of(context).theme ==
-                            AdaptiveTheme.of(context).darkTheme
-                        ? Colors.white70
-                        : Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+    );
+  }
+
+  Widget _socialIcon(IconData icon, String url) {
+    return InkWell(
+      onTap: () async {
+        final Uri uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        }
+      },
+      borderRadius: BorderRadius.circular(50),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 1),
+        ),
+        child: Icon(icon, color: Colors.white, size: 20),
       ),
     );
   }

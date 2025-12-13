@@ -34,7 +34,7 @@ void showExit(BuildContext context) {
                 //   imageAsset: "assets/images/empty-directions.png",
                 //   text: "Are you sure you want to exit the app",
                 // ),
-                Text("Are you sure you want to exit the app",
+                const Text("Are you sure you want to exit the app",
                     style:
                         TextStyle(fontFamily: 'Manrope', color: Colors.white)),
                 SizedBox(height: getProportionateScreenHeight(15)),

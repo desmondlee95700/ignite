@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:ignite/functions/constant.dart';
 import 'package:ignite/screens/lyrics/thumbnail_cubit_bloc/generate_thumbnail_cubit.dart';
@@ -388,7 +386,7 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
                   //     ),
                   //   ),
                   // ),
-                  SizedBox(width: (10)),
+                  const SizedBox(width: (10)),
                   Row(
                     children: [
                       Text(
@@ -399,16 +397,16 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
                           color: kPrimaryColor,
                         ),
                       ),
-                      SizedBox(width: (5)),
+                      const SizedBox(width: (5)),
                       const Text(
                         "/",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(width: (5)),
+                      const SizedBox(width: (5)),
                       Text(
                         "$totalPages",
                         style: const TextStyle(
@@ -419,7 +417,7 @@ class _PDFViewerState extends State<PDFViewer> with WidgetsBindingObserver {
                       ),
                     ],
                   ),
-                  SizedBox(width: (10)),
+                  const SizedBox(width: (10)),
                   IconButton(
                     onPressed: () async {
                       print("Logged total page $totalPages ");
