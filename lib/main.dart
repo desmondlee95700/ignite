@@ -17,10 +17,7 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  await Supabase.initialize(
-    url: 'https://dcwstfkgieuzrtyhfnfs.supabase.co',
-    anonKey: 'sb_publishable_KbIbbnsu3gIMnSeCwUZyRQ_b-4Cwkq5',
-  );
+
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
