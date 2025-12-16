@@ -10,7 +10,7 @@ IGNITE is a modern mobile application designed to streamline church event manage
 
 | Home Feed | Event Details | Profile / Tickets |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/home.png" width="200" alt="Home Screen" /> | <img src="docs/screenshots/event.png" width="200" alt="Event Details" /> | <img src="docs/screenshots/profile.png" width="200" alt="Profile" /> |
+| <img src="docs/screenshots/home.png" width="200" alt="Home Screen" /> | <img src="docs/screenshots/event.png" width="200" alt="Event Details" /> |
 
 *(Note: Upload screenshots to a `docs/` folder in your repo and update the paths above)*
 
