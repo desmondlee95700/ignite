@@ -15,7 +15,7 @@ IGNITE is a modern mobile application designed to streamline church event manage
 
 ## 🛠️ Tech Stack
 
-* **Frontend:** [Insert Framework, e.g., Flutter / React Native / Swift]
+* **Frontend:** [Flutter / Android/iOS]
 * **Backend & Database:** [Supabase](https://supabase.com/) (PostgreSQL)
 * **Authentication:** Supabase Auth (Admin Dashboard - WEB)
 * **Storage:** Supabase Storage (for event banners)
